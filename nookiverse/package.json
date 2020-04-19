@@ -30,6 +30,11 @@
     "styleguide": "styleguidist server",
     "styleguide:build": "styleguidist build"
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!typography-inject-fonts)/"
+    ]
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
