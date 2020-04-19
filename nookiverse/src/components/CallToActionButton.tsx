@@ -1,22 +1,33 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
+import { ThemeProvider, withStyles } from '@material-ui/styles';
+
+import { theme } from '../themes/nookiverse.theme';
 
 /**
- * Button used for calling users to action.
+ * Button used for calling users to perform an action.
  */
 export default class CallToActionButton extends React.Component {
-  buttonText: string;
+  text: string;
+
+  callToActionButton = withStyles({
+    root: {
+      fontWeight: 400
+    }
+  })(Button);
 
   constructor(props: any) {
     super(props);
-    this.buttonText = props.text ? props.text : 'OK';
+    this.text = props.text ? props.text : 'OK';
   }
 
   render() {
     return (
-      <Button variant="contained" color="primary">
-        {this.buttonText}
-      </Button>
+      <ThemeProvider theme={theme}>
+        <this.callToActionButton variant="contained" color="secondary">
+          {this.text}
+        </this.callToActionButton>
+      </ThemeProvider>
     );
   }
 }
