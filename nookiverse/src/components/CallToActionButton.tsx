@@ -1,33 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
-import { ThemeProvider, withStyles } from '@material-ui/styles';
 
-import { theme } from '../themes/nookiverse.theme';
+type CallToActionButtonProps = {
+  text: string;
+}
 
 /**
  * Button used for calling users to perform an action.
  */
-export default class CallToActionButton extends React.Component {
-  text: string;
+export default function CallToActionButton(props: CallToActionButtonProps) {
+  return (
+      <Button variant="contained" color="secondary">
+        {props.text}
+      </Button>
+  );
+}
 
-  callToActionButton = withStyles({
-    root: {
-      fontWeight: 400
-    }
-  })(Button);
+CallToActionButton.propTypes = {
+  text: PropTypes.string.isRequired
+}
 
-  constructor(props: any) {
-    super(props);
-    this.text = props.text ? props.text : 'OK';
-  }
-
-  render() {
-    return (
-      <ThemeProvider theme={theme}>
-        <this.callToActionButton variant="contained" color="secondary">
-          {this.text}
-        </this.callToActionButton>
-      </ThemeProvider>
-    );
-  }
+CallToActionButton.defaultProps = {
+  text: 'OK'
 }

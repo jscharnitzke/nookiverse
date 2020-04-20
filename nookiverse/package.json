@@ -20,7 +20,8 @@
     "typeface-baloo-bhaina": "0.0.72",
     "typescript": "^3.7.5",
     "typography": "^0.16.19",
-    "typography-inject-fonts": "0.0.0"
+    "typography-inject-fonts": "0.0.0",
+    "webpack": "^4.42.0"
   },
   "scripts": {
     "start": "react-scripts start",

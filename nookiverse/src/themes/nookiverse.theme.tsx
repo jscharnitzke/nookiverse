@@ -11,6 +11,14 @@ const typography = new Typography({
         '500',
         '700'
       ]
+    },
+    {
+      name: 'Roboto',
+      styles: [
+        '400',
+        '500',
+        '700'
+      ]
     }
   ]
 });
@@ -33,3 +41,4 @@ export const theme = createMuiTheme({
     fontFamily: ['Baloo Bhaina 2', 'Roboto', 'Arial'].join(','),
   },
 });
+
