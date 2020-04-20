@@ -34,7 +34,7 @@ export const theme = createMuiTheme({
       main: '#7b6c53',
       contrastText: '#f8f8f0',
     },
-    contrastThreshold: 2,
+    contrastThreshold: 3,
     tonalOffset: 0.2,
   },
   typography: {
