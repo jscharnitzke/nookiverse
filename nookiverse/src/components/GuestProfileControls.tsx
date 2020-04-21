@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -64,10 +65,12 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
                 </Button>
             </Box>
             <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <Tabs variant="fullWidth" value={tabValue} onChange={handleTabChange} aria-label="login and register tabs">
-                    <Tab label="I have an account" />
-                    <Tab label="I'm a new user" />
-                </Tabs>
+                <AppBar position="static" color="default">
+                    <Tabs variant="fullWidth" value={tabValue} onChange={handleTabChange} aria-label="login and register tabs">
+                        <Tab label="I have an account" />
+                        <Tab label="I'm a new user" />
+                    </Tabs>
+                </AppBar>
                 <DialogTitle id="form-dialog-title">{logInOrRegisterText}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
