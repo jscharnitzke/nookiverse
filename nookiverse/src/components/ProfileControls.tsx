@@ -5,7 +5,6 @@ import GuestProfileControls from './GuestProfileControls';
 import MemberProfileControls from './MemberProfileControls';
 
 type ProfileControlsProps = {
-    className: string,
     isLoggedIn: boolean
 }
 
@@ -15,12 +14,13 @@ type ProfileControlsProps = {
  */
 export default function ProfileControls(props: ProfileControlsProps) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const handleLoginClick = () => setIsLoggedIn(true);
     const handleRegisterClick = () => console.log('User wants to register');
     const handleLogoutClick = () => setIsLoggedIn(false);
 
     return (
-        <div className={props.className}>
+        <div>
             {
                 isLoggedIn ? 
                 <MemberProfileControls handleLogoutClick={handleLogoutClick} /> : 
