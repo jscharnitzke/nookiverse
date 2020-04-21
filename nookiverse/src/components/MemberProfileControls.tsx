@@ -29,7 +29,6 @@ type MemberProfileControlsProps = {
  */
 export default function MemberProfileControls(props: MemberProfileControlsProps) {
     const classes = useStyles();
-    const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
     return (
         <Box display="flex" className={classes.root} alignItems="center" justifyItems="flex-end">
