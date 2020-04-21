@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import GuestProfileControls from './GuestProfileControls';
 import MemberProfileControls from './MemberProfileControls';
 
 type ProfileControlsProps = {
@@ -13,11 +14,23 @@ type ProfileControlsProps = {
  * @param props
  */
 export default function ProfileControls(props: ProfileControlsProps) {
-        return (
-            <div className={props.className}>
-                {props.isLoggedIn ? <MemberProfileControls /> : 'Test'}
-            </div>
-        )
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const handleLoginClick = () => setIsLoggedIn(true);
+    const handleRegisterClick = () => console.log('User wants to register');
+    const handleLogoutClick = () => setIsLoggedIn(false);
+
+    return (
+        <div className={props.className}>
+            {
+                isLoggedIn ? 
+                <MemberProfileControls handleLogoutClick={handleLogoutClick} /> : 
+                <GuestProfileControls 
+                    handleLoginClick={handleLoginClick}
+                    handleRegisterClick={handleRegisterClick}
+                />
+            }
+        </div>
+    )
 }
 
 ProfileControls.propTypes = {

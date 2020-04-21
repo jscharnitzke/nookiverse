@@ -40,5 +40,6 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: ['Baloo Bhaina 2', 'Roboto', 'Arial'].join(','),
   },
+  spacing: 8,
 });
 

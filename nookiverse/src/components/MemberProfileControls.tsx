@@ -1,7 +1,13 @@
 import React from 'react';
-import { Avatar, Link } from '@material-ui/core';
-import ExitToApp from '@material-ui/icons/ExitToApp';
+import PropTypes from 'prop-types';
+
+import Box from '@material-ui/core/Box';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import ExitToApp from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,23 +20,27 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+type MemberProfileControlsProps = {
+  handleLogoutClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
 /**
  * Controls for existing members to customize their profiles or log out.
  */
-// TODO: Change Log Out link to a button w/ text
-// TODO: Modify styling so that the avatar and logout controls are inline
-export default function MemberProfileControls() {
+export default function MemberProfileControls(props: MemberProfileControlsProps) {
     const classes = useStyles();
     const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
     return (
-        <div className={classes.root}>
-            <Link href="#" onClick={preventDefault} className={classes.materialIcon}>
-                <ExitToApp color="secondary" />
-            </Link>
-            <Link href="#" onClick={preventDefault}>
-                <Avatar alt="User">U</Avatar>
-            </Link>
-        </div>
+        <Box display="flex" className={classes.root} alignItems="center" justifyItems="flex-end">
+          <Avatar></Avatar>
+          <IconButton onClick={props.handleLogoutClick}>
+            <ExitToApp />
+          </IconButton>
+        </Box>
     );
+}
+
+MemberProfileControls.propTypes = {
+  handleLogoutClick: PropTypes.func.isRequired
 }
