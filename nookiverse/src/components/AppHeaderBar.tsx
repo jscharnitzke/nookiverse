@@ -10,13 +10,14 @@ import Typography from '@material-ui/core/Typography';
 import ProfileControls from './ProfileControls';
 
 type AppHeaderBarProps = {
-    title: string
+    title: string,
+    className?: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      zIndex: theme.zIndex.drawer + 1
     },
     title: {
       flexGrow: 1,
@@ -33,19 +34,18 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <AppBar position="static" color="primary">
-                <Toolbar>
-                    <Typography variant="h6" className={classes.title}>{props.title}</Typography>
-                    <ProfileControls isLoggedIn={true} />
-                </Toolbar>
-            </AppBar>
-        </div>
+      <AppBar position="fixed" color="primary" className={classes.root}>
+          <Toolbar>
+              <Typography variant="h6" className={classes.title}>{props.title}</Typography>
+              <ProfileControls isLoggedIn={true} />
+          </Toolbar>
+      </AppBar>
     );
 }
 
 AppHeaderBar.propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    className: PropTypes.string
 }
 
 AppHeaderBar.defaultProps = {
