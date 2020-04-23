@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import GuestProfileControls from './GuestProfileControls';
 import MemberProfileControls from './MemberProfileControls';
-import { AuthContext } from '../contexts/auth';
+import { AuthContext } from '../context/auth';
 
 type ProfileControlsProps = {
     isLoggedIn: boolean

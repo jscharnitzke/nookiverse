@@ -19,7 +19,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 
-import { AuthContext } from './contexts/auth';
+import { AuthContext } from './context/auth';
 
 const drawerWidth = 240;
 
