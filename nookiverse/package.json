@@ -24,6 +24,7 @@
     "typescript": "^3.7.5",
     "typography": "^0.16.19",
     "typography-inject-fonts": "0.0.0",
+    "universal-cookie": "^4.0.3",
     "webpack": "^4.42.0"
   },
   "scripts": {

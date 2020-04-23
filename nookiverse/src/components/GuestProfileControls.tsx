@@ -14,14 +14,16 @@ import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
 
 type GuestProfileControlsProps = {
-    handleLoginClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    handleRegisterClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    handleLoginClick: (email: string, password: string) => void;
+    handleRegisterClick: (email: string, password: string) => void;
 }
 
 export default function GuestProfileControls(props: GuestProfileControlsProps) {
     const [isMember, setIsMember] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [tabValue, setTabValue] = useState(0);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleOpenDialog = () => setIsOpen(true);
     const handleOpenDialogLogIn = () => {
@@ -38,12 +40,12 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
     const handleClose = () => setIsOpen(false);
 
     const handleLoginClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.handleLoginClick(event);
+        props.handleLoginClick(email, password);
         handleClose();
     }
 
     const handleRegisterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.handleRegisterClick(event);
+        props.handleRegisterClick(email, password);
         handleClose();
     }
 
@@ -87,6 +89,11 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
                         label="Email Address"
                         type="email"
                         fullWidth
+                        onChange={
+                            e => {
+                                setEmail(e.target.value);
+                            }
+                        }
                     />
                     <TextField
                         margin="dense"
@@ -94,6 +101,11 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
                         label="Password"
                         type="password"
                         fullWidth
+                        onChange={
+                            e => {
+                                setPassword(e.target.value)
+                            }
+                        }
                     />
                     <DialogActions>
                         <Button onClick={handleClose}>
