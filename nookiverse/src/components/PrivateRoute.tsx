@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Route, RouteProps, Redirect } from 'react-router-dom';
+import { AuthContext } from '../contexts/auth';
 
-class PrivateRouteComponent extends React.Component {
-    render() {
-        return (
-            <div {...this.props}></div>
-        );
-    }
+type PrivateRouteProps = RouteProps & {
+    component: React.ComponentType<any>
 }
 
-export default function PrivateRoute({ component: Component, ...rest }: RouteProps) {
-    const [authToken, setAuthToken] = useState();
+export default function PrivateRoute({ component: PrivateComponent, ...rest }: PrivateRouteProps) {
+    const authState = useContext(AuthContext);
 
     return (
             <Route {...rest} render={(props) => 
-                    authToken ? 
-                    (<PrivateRouteComponent { ...props } />) : 
+                    authState.authToken ? 
+                    (<PrivateComponent { ...props } />) : 
                     (<Redirect to="/" />) 
                 }
             />

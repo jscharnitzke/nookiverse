@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import Cookies from 'universal-cookie';
 
 import GuestProfileControls from './GuestProfileControls';
 import MemberProfileControls from './MemberProfileControls';
+import { AuthContext } from '../contexts/auth';
 
 type ProfileControlsProps = {
     isLoggedIn: boolean
@@ -14,17 +14,17 @@ type ProfileControlsProps = {
  * @param props
  */
 export default function ProfileControls(props: ProfileControlsProps) {
-    const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-    const cookies = new Cookies();
+    const authState = useContext(AuthContext);
+    const [ isLoggedIn, setIsLoggedIn ] = useState(authState.authToken ? true : false);
 
     const handleLoginClick = (email: string, password: string) => {
-        cookies.set('authToken', email+password);
         setIsLoggedIn(true);
+        authState.setAuthToken(email + password);
     }
     const handleRegisterClick = () => console.log('User wants to register');
     const handleLogoutClick = () => {
-        cookies.remove('authToken');
         setIsLoggedIn(false);
+        authState.expireAuthToken();
     }
 
     return (

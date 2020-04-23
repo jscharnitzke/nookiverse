@@ -19,6 +19,8 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 
+import { AuthContext } from './contexts/auth';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,21 +52,26 @@ const useStyles = makeStyles((theme: Theme) =>
 }));
 
 function App() {
-  const existingTokens = JSON.parse(localStorage.getItem("tokens") as string);
-  const [authTokens, setAuthTokens] = useState(existingTokens);
+  const existingTokens = JSON.parse(localStorage.getItem("token") as string);
+  const [authToken, setAuthToken] = useState(existingTokens);
   const classes = useStyles();
 
-  const setTokens = (data: string[]) => {
-    localStorage.setItem("tokens", JSON.stringify(data));
-    setAuthTokens(data);
-    console.log(authTokens);
+  const logUserIn = (data: string) => {
+    localStorage.setItem("token", JSON.stringify(data));
+    setAuthToken(data);
+  }
+
+  const logUserOut = () => {
+    localStorage.removeItem("token");
+    setAuthToken(null);
   }
 
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        <AppHeaderBar title='Nookiverse' />
+        <AuthContext.Provider value={{ authToken, setAuthToken: logUserIn, expireAuthToken: logUserOut }}>
+          <AppHeaderBar title='Nookiverse' />
           <Router>
             <Drawer variant="permanent" className={classes.drawer} classes={{paper: classes.drawerPaper}}>
               <Toolbar/>
@@ -89,6 +96,7 @@ function App() {
               <PrivateRoute path="/admin" component={Admin} />
             </main>
           </Router>
+        </AuthContext.Provider>
       </div>
     </ThemeProvider>
   );
