@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
 
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
+
 type GuestProfileControlsProps = {
     handleLoginClick: (email: string, password: string) => void;
     handleRegisterClick: (email: string, password: string) => void;
+    handleSSOLogin: (accessToken: string) => void;
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    loginDialog: {
+        textAlign: 'center'
+    }
+  }),
+);
 
 export default function GuestProfileControls(props: GuestProfileControlsProps) {
     const [isMember, setIsMember] = useState(false);
@@ -24,6 +36,7 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
     const [tabValue, setTabValue] = useState(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const classes = useStyles();
 
     const handleOpenDialog = () => setIsOpen(true);
     const handleOpenDialogLogIn = () => {
@@ -49,12 +62,22 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
         handleClose();
     }
 
+    const handleResponseFacebook = (response: any) => {
+        console.log(response);
+        handleClose();
+    }
+
+    const handleResponseGoogle = (response: any) => {
+        props.handleSSOLogin(response.accessToken);
+        handleClose();
+    }
+
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setIsMember(newTabValue === 0);
         setTabValue(newTabValue);
     }
 
-    const logInOrRegisterText = isMember ? 'Log In' : 'Register';
+    const logInOrRegisterText = isMember ? 'Log in' : 'Sign up';
 
     return (
         <div>
@@ -73,15 +96,26 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
                         <Tab label="I'm a new user" />
                     </Tabs>
                 </AppBar>
-                <DialogTitle id="form-dialog-title">{logInOrRegisterText}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {
-                            isMember ?
-                            "Welcome back! Please log in below." :
-                            "To start tracking your data, please register a new account."
-                        }
-                    </DialogContentText>
+                <DialogContent className={classes.loginDialog}>
+                    <Box display="flex" flexDirection="column">
+                        <FacebookLogin
+                            appId=""
+                            autoLoad={true}
+                            fields="name,email,picture"
+                            callback={handleResponseFacebook}
+                            textButton={logInOrRegisterText + ' with Facebook'}
+                        />
+                        <GoogleLogin
+                            clientId='1008722468596-qcs7aiuce1knceq0tm8dn9454673f0ho.apps.googleusercontent.com'
+                            buttonText={logInOrRegisterText + ' with Google'}
+                            onSuccess={handleResponseGoogle}
+                            onFailure={handleResponseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                            tag='Button'
+                            disabled={false}
+                        />
+                    </Box>
+                    <Divider />
                     <TextField
                         autoFocus
                         margin="dense"
@@ -123,5 +157,6 @@ export default function GuestProfileControls(props: GuestProfileControlsProps) {
 
 GuestProfileControls.propTypes = {
     handleLoginClick: PropTypes.func.isRequired,
-    handleRegisterClick: PropTypes.func.isRequired
+    handleRegisterClick: PropTypes.func.isRequired,
+    handleSSOLogin: PropTypes.func.isRequired
 }

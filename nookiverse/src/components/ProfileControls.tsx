@@ -21,7 +21,13 @@ export default function ProfileControls(props: ProfileControlsProps) {
         setIsLoggedIn(true);
         authState.setAuthToken(email + password);
     }
+    const handleSSOLogin = (accessToken: string) => {
+        setIsLoggedIn(true);
+        authState.setAuthToken(accessToken);
+    }
+
     const handleRegisterClick = () => console.log('User wants to register');
+    
     const handleLogoutClick = () => {
         setIsLoggedIn(false);
         authState.expireAuthToken();
@@ -35,6 +41,7 @@ export default function ProfileControls(props: ProfileControlsProps) {
                 <GuestProfileControls 
                     handleLoginClick={handleLoginClick}
                     handleRegisterClick={handleRegisterClick}
+                    handleSSOLogin={handleSSOLogin}
                 />
             }
         </div>

@@ -42,13 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
       marginLeft: drawerWidth
-    },
-    list: {
-      width: 250
-    },
-    fullList: {
-      width: 'auto'
-    },
+    }
 }));
 
 function App() {

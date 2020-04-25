@@ -36,10 +36,14 @@ export const theme = createMuiTheme({
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,
+    background: {
+      default: '#e9f5eb',
+      paper: '#fff'
+    }
   },
   typography: {
     fontFamily: ['Baloo Bhaina 2', 'Roboto', 'Arial'].join(','),
   },
-  spacing: 8,
+  spacing: 8
 });
 
