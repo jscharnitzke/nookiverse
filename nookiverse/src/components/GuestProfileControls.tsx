@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { Link } from 'react-router-dom';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
@@ -32,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
         textAlign: 'left'
     },
     dialogText: {
+        marginTop:  theme.spacing(2),
         textAlign: 'center'
     }
   }),
@@ -40,12 +43,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const recaptchaRef = React.createRef<ReCAPTCHA>();
 
 export default function GuestProfileControls() {
+    const classes = useStyles();
     const [isMember, setIsMember] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [tabValue, setTabValue] = useState(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const classes = useStyles();
+    const [emailHelperText, setEmailHelperText] = useState();
+    const [passwordHelperText, setPasswordHelperText] =  useState();
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError,  setPasswordError] =  useState(false);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setIsMember(newTabValue === 0);
@@ -84,7 +91,16 @@ export default function GuestProfileControls() {
             await firebase.auth().createUserWithEmailAndPassword(email, password);
             handleCloseDialog();
         } catch(error) {
-            console.error(error);
+            switch(error.code) {
+                case 'auth/weak-password':
+                    setPasswordHelperText(error.message);
+                    setPasswordError(true);
+                    break;
+                default:
+                    setEmailHelperText('Unknown error. Please try again later.');
+                    setEmailError(true);
+                    setPasswordError(true);
+            }
         }
 
     }
@@ -180,6 +196,8 @@ export default function GuestProfileControls() {
                                 setEmail(e.target.value);
                             }
                         }
+                        helperText={emailHelperText}
+                        error={emailError}
                     />
                     <TextField
                         margin="dense"
@@ -192,7 +210,12 @@ export default function GuestProfileControls() {
                                 setPassword(e.target.value)
                             }
                         }
+                        helperText={passwordHelperText}
+                        error={passwordError}
                     />
+                    <DialogContentText className={classes.dialogText} hidden={!isMember}>
+                        <Link to=''>I forgot my password</Link>
+                    </DialogContentText>
                     <DialogActions>
                         <Button onClick={handleCloseDialog}>
                             Cancel

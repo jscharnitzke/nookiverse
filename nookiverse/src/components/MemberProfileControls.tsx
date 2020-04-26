@@ -3,10 +3,11 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+
+import { Link } from  'react-router-dom';
 
 import * as firebase from 'firebase';
 
@@ -33,7 +34,7 @@ export default function MemberProfileControls() {
 
     return (
         <Box display="flex" className={classes.root} alignItems="center" justifyItems="flex-end">
-          <Avatar></Avatar>
+          <Link to="/profile"><Avatar></Avatar></Link>
           <IconButton onClick={handleClickLogout}>
             <ExitToApp />
           </IconButton>

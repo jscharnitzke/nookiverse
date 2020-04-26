@@ -18,6 +18,7 @@ import './App.css';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
+import { Profile } from './pages/Profile';
 
 import 'firebase/auth';
 import * as firebase from 'firebase/app';
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
+      flexGrow: 1
     },
     drawer: {
       wdith: drawerWidth,
@@ -43,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
-      marginLeft: drawerWidth
+      padding: 0,
+      marginLeft: drawerWidth,
     }
 }));
 
@@ -56,8 +58,8 @@ function App() {
       <div className={classes.root}>
         <CssBaseline />
         <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
-          <AppHeaderBar title='Nookiverse' />
           <Router>
+            <AppHeaderBar title='Nookiverse' />
             <Drawer variant="permanent" className={classes.drawer} classes={{paper: classes.drawerPaper}}>
               <Toolbar/>
               <div className={classes.drawerContainer}>
@@ -83,6 +85,7 @@ function App() {
               <Toolbar />
               <Route exact path="/" component={Home} />
               <PrivateRoute path="/admin" component={Admin} />
+              <PrivateRoute path="/profile" component={Profile} />
             </main>
           </Router>
         </FirebaseAuthProvider>
