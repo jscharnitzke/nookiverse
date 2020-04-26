@@ -21,7 +21,7 @@ import Admin from './pages/Admin';
 
 import 'firebase/auth';
 import * as firebase from 'firebase/app';
-import { FirebaseAuthProvider } from '@react-firebase/auth';
+import { FirebaseAuthProvider, IfFirebaseAuthed } from '@react-firebase/auth';
 import { firebaseConfig } from './firebase.config';
 
 const drawerWidth = 240;
@@ -67,11 +67,15 @@ function App() {
                       <ListItemText primary="Home" />
                     </ListItem>
                   </Link>
-                  <Link to="/admin">
-                    <ListItem button key="admin">
-                      <ListItemText primary="Admin" />
-                    </ListItem>
-                  </Link>
+                  <IfFirebaseAuthed>
+                    {() => (
+                      <Link to="/admin">
+                        <ListItem button key="admin">
+                          <ListItemText primary="Admin" />
+                        </ListItem>
+                      </Link>
+                    )}
+                  </IfFirebaseAuthed>
                 </List>
               </div>
             </Drawer>
