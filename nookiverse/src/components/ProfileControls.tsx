@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import GuestProfileControls from './GuestProfileControls';
 import MemberProfileControls from './MemberProfileControls';
-import { AuthContext } from '../context/auth';
+
+import { IfFirebaseAuthed, IfFirebaseUnAuthed } from '@react-firebase/auth';
 
 type ProfileControlsProps = {
     isLoggedIn: boolean
@@ -14,36 +15,18 @@ type ProfileControlsProps = {
  * @param props
  */
 export default function ProfileControls(props: ProfileControlsProps) {
-    const authState = useContext(AuthContext);
-    const [ isLoggedIn, setIsLoggedIn ] = useState(authState.authToken ? true : false);
-
-    const handleLoginClick = (email: string, password: string) => {
-        setIsLoggedIn(true);
-        authState.setAuthToken(email + password);
-    }
-    const handleSSOLogin = (accessToken: string) => {
-        setIsLoggedIn(true);
-        authState.setAuthToken(accessToken);
-    }
-
-    const handleRegisterClick = () => console.log('User wants to register');
-    
-    const handleLogoutClick = () => {
-        setIsLoggedIn(false);
-        authState.expireAuthToken();
-    }
-
     return (
         <div>
-            {
-                isLoggedIn ? 
-                <MemberProfileControls handleLogoutClick={handleLogoutClick} /> : 
-                <GuestProfileControls 
-                    handleLoginClick={handleLoginClick}
-                    handleRegisterClick={handleRegisterClick}
-                    handleSSOLogin={handleSSOLogin}
-                />
-            }
+            <IfFirebaseAuthed>
+                {() => (
+                    <MemberProfileControls />
+                )}
+            </IfFirebaseAuthed>
+            <IfFirebaseUnAuthed>
+                {() => (
+                    <GuestProfileControls /> 
+                )}
+            </IfFirebaseUnAuthed>
         </div>
     )
 }
