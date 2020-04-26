@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,6 +9,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import Link from '@material-ui/core/Link';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
@@ -53,10 +53,14 @@ export default function GuestProfileControls() {
     const [passwordHelperText, setPasswordHelperText] =  useState();
     const [emailError, setEmailError] = useState(false);
     const [passwordError,  setPasswordError] =  useState(false);
+    const [actionText, setActionText] = useState();
+    const [hasForgottenPassword, setHasForgottenPassword] = useState(false);
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setIsMember(newTabValue === 0);
+        setActionText(!isMember ? 'log in' : 'sign up');
         setTabValue(newTabValue);
+        setHasForgottenPassword(false);
     }
 
     const handleOpenDialog = () => setIsOpen(true);
@@ -65,12 +69,22 @@ export default function GuestProfileControls() {
     const handleOpenDialogLogIn = () => {
         handleOpenDialog();
         setIsMember(true);
+        setActionText('log in');
         setTabValue(0);
+        setHasForgottenPassword(false);
     }
     const handleOpenDialogRegister = () => {
         handleOpenDialog();
         setIsMember(false);
+        setActionText('sign up');
         setTabValue(1);
+        setHasForgottenPassword(false);
+    }
+
+    const handleClickResetPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        setActionText('reset password');
+        setHasForgottenPassword(true);
     }
     
     const handleLoginClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -83,7 +97,9 @@ export default function GuestProfileControls() {
     }
     
     const handleRegisterClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        recaptchaRef.current?.execute();
+        if(recaptchaRef.current) {
+            recaptchaRef.current.execute();
+        }
     }
 
     const registerNewUser = async () => {
@@ -134,8 +150,6 @@ export default function GuestProfileControls() {
         }
     }
 
-    const logInOrRegisterText = isMember ? 'log in' : 'sign up';
-
     return (
         <div>
             <Box display="flex" flexDirection="row">
@@ -161,7 +175,7 @@ export default function GuestProfileControls() {
                             onClick={handleLogInClickFacebook} 
                             startIcon={<FaFacebook color='#4267b2' />}
                         >                                    
-                            {logInOrRegisterText + ' with Facebook'}
+                            {actionText + ' with Facebook'}
                         </Button>
                         <Button 
                             className={classes.ssoButton}
@@ -169,7 +183,7 @@ export default function GuestProfileControls() {
                             onClick={handleLogInClickGoogle}
                             startIcon={<FcGoogle />}
                         >                                    
-                            {logInOrRegisterText + ' with Google'}
+                            {actionText + ' with Google'}
                         </Button>
                         <Button 
                             className={classes.ssoButton}
@@ -178,11 +192,11 @@ export default function GuestProfileControls() {
                             onClick={handleLogInClickTwitter}
                             disabled
                         >                                    
-                            {logInOrRegisterText + ' with Twitter'}
+                            {actionText + ' with Twitter'}
                         </Button>
                     </Box>
                     <DialogContentText className={classes.dialogText}>
-                        or {logInOrRegisterText} directly with Nookiverse
+                        or {actionText} directly with Nookiverse
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -214,14 +228,14 @@ export default function GuestProfileControls() {
                         error={passwordError}
                     />
                     <DialogContentText className={classes.dialogText} hidden={!isMember}>
-                        <Link to=''>I forgot my password</Link>
+                        <Link href='#' onClick={handleClickResetPassword}>I forgot my password</Link>
                     </DialogContentText>
                     <DialogActions>
                         <Button onClick={handleCloseDialog}>
                             Cancel
                         </Button>
                         <Button variant="outlined" onClick={isMember ? handleLoginClick : handleRegisterClick} color="secondary">
-                            { logInOrRegisterText }
+                            { actionText }
                         </Button>
                         <ReCAPTCHA
                             ref={recaptchaRef}
