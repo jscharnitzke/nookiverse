@@ -16,6 +16,8 @@ import { FaFacebook } from 'react-icons/fa';
 import { FaTwitter } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
+import ReCAPTCHA from 'react-google-recaptcha';
+
 import * as firebase from 'firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   }),
 );
+
+const recaptchaRef = React.createRef<ReCAPTCHA>();
 
 export default function GuestProfileControls() {
     const [isMember, setIsMember] = useState(false);
@@ -72,12 +76,17 @@ export default function GuestProfileControls() {
     }
     
     const handleRegisterClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        recaptchaRef.current?.execute();
+    }
+
+    const registerNewUser = async () => {
         try {
             await firebase.auth().createUserWithEmailAndPassword(email, password);
             handleCloseDialog();
         } catch(error) {
             console.error(error);
         }
+
     }
 
     const handleLogInClickGoogle = async () => {
@@ -191,6 +200,12 @@ export default function GuestProfileControls() {
                         <Button variant="outlined" onClick={isMember ? handleLoginClick : handleRegisterClick} color="secondary">
                             { logInOrRegisterText }
                         </Button>
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            size="invisible"
+                            onChange={registerNewUser}
+                            sitekey="6Lf5Uu4UAAAAAAFzWvupEXSHkU7-A-f0wRXgj_Ae"
+                        />
                     </DialogActions>
                 </DialogContent>
             </Dialog>
