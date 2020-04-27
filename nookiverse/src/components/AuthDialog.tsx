@@ -28,7 +28,7 @@ import { FcGoogle } from 'react-icons/fc';
 
 import ReCAPTCHA from 'react-google-recaptcha';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
 type AuthDialogProps = {
@@ -56,7 +56,8 @@ createStyles({
   },
   dialogText: {
       marginTop:  theme.spacing(2),
-      textAlign: 'center'
+      textAlign: 'center',
+      width: '100%'
   },
   invisibleTab: {
     display: 'none'
@@ -76,9 +77,9 @@ export default function AuthDialog(props: AuthDialogProps) {
     const [passwordHelperText, setPasswordHelperText] =  useState('');
     const [emailError, setEmailError] = useState(false);
     const [passwordError,  setPasswordError] =  useState(false);
-    const [hasForgottenPassword, setHasForgottenPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    // re-render if the parent has changed which tab should be opened on init
     useEffect(() => {
         setTabValue(props.defaultTab);
         setActionText(actionTextStrings[props.defaultTab]);
@@ -93,7 +94,10 @@ export default function AuthDialog(props: AuthDialogProps) {
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setActionText(actionTextStrings[newTabValue]);
         setTabValue(newTabValue);
-        setHasForgottenPassword(false);
+        setEmailError(false);
+        setEmailHelperText('');
+        setPasswordError(false);
+        setPasswordHelperText('');
     }
     
     const handleClickLogInGoogle = async () => {
@@ -121,7 +125,6 @@ export default function AuthDialog(props: AuthDialogProps) {
         event.preventDefault();
         setTabValue(2);
         setActionText('reset password');
-        setHasForgottenPassword(true);
     }
 
     const handleClickShowPassword = () => {
@@ -131,8 +134,24 @@ export default function AuthDialog(props: AuthDialogProps) {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     }
+
+    const handleClickActionButton = (event: React.MouseEvent<HTMLButtonElement>) => {
+        switch(tabValue) {
+            case 0:
+                logInLocal();
+                break;
+            case 1:
+                registerLocal();
+                break;
+            case 2:
+                resetPassword();
+                break;
+            default:
+                console.error('Invalid tab selected');
+        }
+    }
     
-    const handleClickLogInLocal = async () => {
+    const logInLocal = async () => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
             closeDialog();
@@ -141,9 +160,18 @@ export default function AuthDialog(props: AuthDialogProps) {
         }
     }
     
-    const handleClickRegisterLocal = async () => {
+    const registerLocal = () => {
         if(recaptchaRef.current) {
             recaptchaRef.current.execute();
+        }
+    }
+
+    const resetPassword = async () => {
+        try {
+            await firebase.auth().sendPasswordResetEmail(email);
+            closeDialog();
+        } catch(error) {
+            console.error(error);
         }
     }
 
@@ -181,36 +209,42 @@ export default function AuthDialog(props: AuthDialogProps) {
                 </Tabs>
             </AppBar>
             <DialogContent>
-                <Box className={classes.ssoBox} my={4} px={4}>
-                    <Button 
-                        className={classes.ssoButton}
-                        variant='contained' 
-                        onClick={handleClickLogInFacebook} 
-                        startIcon={<FaFacebook color='#4267b2' />}
-                    >                                    
-                        {actionText + ' with Facebook'}
-                    </Button>
-                    <Button 
-                        className={classes.ssoButton}
-                        variant='contained' 
-                        onClick={handleClickLogInGoogle}
-                        startIcon={<FcGoogle />}
-                    >                                    
-                        {actionText + ' with Google'}
-                    </Button>
-                    <Button 
-                        className={classes.ssoButton}
-                        variant='contained'
-                        startIcon={<FaTwitter color='#38A1F3' />}
-                        onClick={handleClickLogInTwitter}
-                        disabled
-                    >                                    
-                        {actionText + ' with Twitter'}
-                    </Button>
-                </Box>
-                <DialogContentText className={classes.dialogText}>
-                    or {actionText} directly with Nookiverse
-                </DialogContentText>
+                {tabValue !== 2 && 
+                    <Box className={classes.ssoBox} my={4} px={4}>
+                        <Button 
+                            className={classes.ssoButton}
+                            variant='contained' 
+                            onClick={handleClickLogInFacebook} 
+                            startIcon={<FaFacebook color='#4267b2' />}
+                        >                                    
+                            {actionText + ' with Facebook'}
+                        </Button>
+                        <Button 
+                            className={classes.ssoButton}
+                            variant='contained' 
+                            onClick={handleClickLogInGoogle}
+                            startIcon={<FcGoogle />}
+                        >                                    
+                            {actionText + ' with Google'}
+                        </Button>
+                        <Button 
+                            className={classes.ssoButton}
+                            variant='contained'
+                            startIcon={<FaTwitter color='#38A1F3' />}
+                            onClick={handleClickLogInTwitter}
+                            disabled
+                        >                                    
+                            {actionText + ' with Twitter'}
+                        </Button>
+                    </Box>
+                }
+                {tabValue !== 2 && 
+                    <Box>
+                        <DialogContentText className={classes.dialogText}>
+                            or {actionText} directly with Nookiverse
+                        </DialogContentText>
+                    </Box>
+                }
                 <TextField
                     autoFocus
                     margin="dense"
@@ -225,45 +259,35 @@ export default function AuthDialog(props: AuthDialogProps) {
                     }
                     helperText={emailHelperText}
                     error={emailError}
+                    required
                 />
-                <FormControl fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={e => {
-                            setPassword(e.target.value)
-                        }}
-                        error={passwordError}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visilibity"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                    <FormHelperText error={passwordError}>{passwordHelperText}</FormHelperText>
-                </FormControl>
-                {/* <TextField
-                    margin="dense"
-                    id="password"
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    onChange={
-                        e => {
-                            setPassword(e.target.value)
-                        }
-                    }
-                    helperText={passwordHelperText}
-                    error={passwordError}
-                /> */}
+                {tabValue !== 2 &&
+                    <FormControl fullWidth>
+                        <InputLabel htmlFor="password" required>Password</InputLabel>
+                        <Input
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            required
+                            onChange={e => {
+                                setPassword(e.target.value)
+                            }}
+                            error={passwordError}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visilibity"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                        <FormHelperText error={passwordError}>{passwordHelperText}</FormHelperText>
+                    </FormControl>
+                }
                 <DialogContentText className={classes.dialogText} hidden={tabValue !== 0}>
                     <Link href='#' onClick={handleClickResetPassword}>I forgot my password</Link>
                 </DialogContentText>
@@ -271,7 +295,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Button onClick={closeDialog}>
                         Cancel
                     </Button>
-                    <Button variant="outlined" onClick={tabValue === 0 ? handleClickLogInLocal : handleClickRegisterLocal} color="secondary">
+                    <Button id="action-button" variant="outlined" onClick={handleClickActionButton} color="secondary">
                         { actionText }
                     </Button>
                     <ReCAPTCHA
