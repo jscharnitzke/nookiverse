@@ -9,11 +9,19 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputLabel from '@material-ui/core/InputLabel';
 import Link from '@material-ui/core/Link';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
 
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { FaFacebook } from 'react-icons/fa';
 import { FaTwitter } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -22,8 +30,6 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import * as firebase from 'firebase';
 import 'firebase/auth';
-
-type CallbackFunctionOnButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => void;
 
 type AuthDialogProps = {
     isOpen: boolean,
@@ -71,6 +77,7 @@ export default function AuthDialog(props: AuthDialogProps) {
     const [emailError, setEmailError] = useState(false);
     const [passwordError,  setPasswordError] =  useState(false);
     const [hasForgottenPassword, setHasForgottenPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         setTabValue(props.defaultTab);
@@ -89,17 +96,17 @@ export default function AuthDialog(props: AuthDialogProps) {
         setHasForgottenPassword(false);
     }
     
-    const handleLogInClickGoogle = async () => {
+    const handleClickLogInGoogle = async () => {
         const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
         await firebase.auth().signInWithPopup(googleAuthProvider);
     }
     
-    const handleLogInClickFacebook = async () => {
+    const handleClickLogInFacebook = async () => {
         const facebookAuthProvider = new firebase.auth.FacebookAuthProvider();
         await firebase.auth().signInWithPopup(facebookAuthProvider);
     }
     
-    const handleLogInClickTwitter = async () => {
+    const handleClickLogInTwitter = async () => {
         const twitterAuthProvider = new firebase.auth.TwitterAuthProvider();
     
         try {
@@ -116,8 +123,16 @@ export default function AuthDialog(props: AuthDialogProps) {
         setActionText('reset password');
         setHasForgottenPassword(true);
     }
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    }
     
-    const handleLoginClick = async () => {
+    const handleClickLogInLocal = async () => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
             closeDialog();
@@ -126,7 +141,7 @@ export default function AuthDialog(props: AuthDialogProps) {
         }
     }
     
-    const handleRegisterClick = async () => {
+    const handleClickRegisterLocal = async () => {
         if(recaptchaRef.current) {
             recaptchaRef.current.execute();
         }
@@ -170,7 +185,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Button 
                         className={classes.ssoButton}
                         variant='contained' 
-                        onClick={handleLogInClickFacebook} 
+                        onClick={handleClickLogInFacebook} 
                         startIcon={<FaFacebook color='#4267b2' />}
                     >                                    
                         {actionText + ' with Facebook'}
@@ -178,7 +193,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Button 
                         className={classes.ssoButton}
                         variant='contained' 
-                        onClick={handleLogInClickGoogle}
+                        onClick={handleClickLogInGoogle}
                         startIcon={<FcGoogle />}
                     >                                    
                         {actionText + ' with Google'}
@@ -187,7 +202,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                         className={classes.ssoButton}
                         variant='contained'
                         startIcon={<FaTwitter color='#38A1F3' />}
-                        onClick={handleLogInClickTwitter}
+                        onClick={handleClickLogInTwitter}
                         disabled
                     >                                    
                         {actionText + ' with Twitter'}
@@ -211,7 +226,31 @@ export default function AuthDialog(props: AuthDialogProps) {
                     helperText={emailHelperText}
                     error={emailError}
                 />
-                <TextField
+                <FormControl fullWidth>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={e => {
+                            setPassword(e.target.value)
+                        }}
+                        error={passwordError}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visilibity"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                    <FormHelperText error={passwordError}>{passwordHelperText}</FormHelperText>
+                </FormControl>
+                {/* <TextField
                     margin="dense"
                     id="password"
                     label="Password"
@@ -224,7 +263,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     }
                     helperText={passwordHelperText}
                     error={passwordError}
-                />
+                /> */}
                 <DialogContentText className={classes.dialogText} hidden={tabValue !== 0}>
                     <Link href='#' onClick={handleClickResetPassword}>I forgot my password</Link>
                 </DialogContentText>
@@ -232,7 +271,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Button onClick={closeDialog}>
                         Cancel
                     </Button>
-                    <Button variant="outlined" onClick={tabValue === 0 ? handleLoginClick : handleRegisterClick} color="secondary">
+                    <Button variant="outlined" onClick={tabValue === 0 ? handleClickLogInLocal : handleClickRegisterLocal} color="secondary">
                         { actionText }
                     </Button>
                     <ReCAPTCHA
