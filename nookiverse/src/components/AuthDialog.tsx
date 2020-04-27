@@ -175,6 +175,20 @@ export default function AuthDialog(props: AuthDialogProps) {
         }
     }
 
+    const validateEmail = () => {
+
+    }
+
+    const validatePassword = () => {
+        if(password.length < 12) {
+            setPasswordHelperText('Password must be at least 12 characters');
+            setPasswordError(true);
+        } else {
+            setPasswordHelperText('');
+            setPasswordError(false);
+        }
+    }
+
     const handleErrors = (error: firebase.auth.Error) => {
         switch(error.code) {
             case 'auth/weak-password':
@@ -193,6 +207,7 @@ export default function AuthDialog(props: AuthDialogProps) {
     const registerNewUser = async () => {
         try {
             await firebase.auth().createUserWithEmailAndPassword(email, password);
+            firebase.auth().currentUser?.sendEmailVerification();
             closeDialog();
         } catch(error) {
             handleErrors(error);
@@ -255,6 +270,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     onChange={
                         e => {
                             setEmail(e.target.value);
+                            validateEmail();
                         }
                     }
                     helperText={emailHelperText}
@@ -270,7 +286,8 @@ export default function AuthDialog(props: AuthDialogProps) {
                             value={password}
                             required
                             onChange={e => {
-                                setPassword(e.target.value)
+                                setPassword(e.target.value);
+                                validatePassword();
                             }}
                             error={passwordError}
                             endAdornment={
