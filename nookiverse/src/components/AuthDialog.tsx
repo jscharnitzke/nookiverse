@@ -35,11 +35,22 @@ const ProviderObject:{[key:string]: any} = {
     'twitter': firebase.auth.TwitterAuthProvider
 }
 
-const actionTextStrings = [
+const ActionTextStrings = [
     'log in',
     'sign up',
     'reset password'
-]
+];
+
+const EmailErrorStrings: {[key: string]: string} = {
+    'auth/user-not-found': 'Your email or password is incorrect',
+    'auth/invalid-email': 'Something doesn\'t look right!',
+    'auth/wrong-password': 'Your email or password is incorrect',
+}
+
+const PasswordErrorStrings: {[key:string]: string} = {
+    'auth/user-not-found': 'Your email or password is incorrect',
+    'auth/wrong-password': 'Your email or password is incorrect',
+}
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -68,14 +79,13 @@ const recaptchaRef = React.createRef<ReCAPTCHA>();
 export default function AuthDialog(props: AuthDialogProps) {
     const classes = useStyles();
     const [tabValue, setTabValue] = useState(props.defaultTab);
-    const [actionText, setActionText] = useState(actionTextStrings[tabValue]);
+    const [actionText, setActionText] = useState(ActionTextStrings[tabValue]);
 
-    const [formIsProcessing, setFormIsProcessing] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const [email, setEmail] = useState('');
     const [emailHelperText, setEmailHelperText] = useState('');
     const [emailIsValid, setEmailIsValid] = useState(false);
-    const [emailError, setEmailError] = useState(false);
 
     const [password, setPassword] = useState('');
     const [passwordHelperText, setPasswordHelperText] = useState('');
@@ -84,7 +94,7 @@ export default function AuthDialog(props: AuthDialogProps) {
     // re-render if the parent has changed which tab should be opened on init
     useEffect(() => {
         setTabValue(props.defaultTab);
-        setActionText(actionTextStrings[props.defaultTab]);
+        setActionText(ActionTextStrings[props.defaultTab]);
     }, [props.defaultTab]);
 
     const closeDialog = () => {
@@ -92,35 +102,32 @@ export default function AuthDialog(props: AuthDialogProps) {
         // reset selected tab and associated action text if the users cancels so that
         // current settings aren't retained if they bring the dialog back up again
         setTabValue(props.defaultTab);
-        setActionText(actionTextStrings[props.defaultTab]);
+        setActionText(ActionTextStrings[props.defaultTab]);
     }
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
-        setActionText(actionTextStrings[newTabValue]);
+        setActionText(ActionTextStrings[newTabValue]);
         setEmail('');
-        setEmailError(false);
         setEmailHelperText('');
-        setEmailIsValid(false);
+        setEmailIsValid(true);
         setPassword('');
-        setPasswordIsValid(false);
+        setPasswordIsValid(true);
         setTabValue(newTabValue);
     }
 
-    const HandlePasswordErrors = (errorText: string) => {
-        setPasswordHelperText(errorText);
-    }
-
     const handleClickSsoLogin = async (provider: string) => {
-        setFormIsProcessing(true);
+        setIsProcessing(true);
+        setEmailHelperText('');
+        setPasswordHelperText('');
 
         try {
             const authProvider = new ProviderObject[provider]();
             await firebase.auth().signInWithPopup(authProvider);
             closeDialog();
         } catch(error) {
-            console.error(error);
+            handleErrors(error);
         } finally {
-            setFormIsProcessing(false);
+            setIsProcessing(false);
         }
     }
     
@@ -137,11 +144,17 @@ export default function AuthDialog(props: AuthDialogProps) {
     ];
     
     const logInLocal = async () => {
+        setIsProcessing(true);
+        setEmailHelperText('');
+        setPasswordHelperText('');
+
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
             closeDialog();
         } catch(error) {
-            console.error(error);
+            handleErrors(error);
+        } finally {
+            setIsProcessing(false);
         }
     }
     
@@ -152,35 +165,61 @@ export default function AuthDialog(props: AuthDialogProps) {
     }
 
     const resetPassword = async () => {
+        setIsProcessing(true);
+        setEmailHelperText('');
+        setPasswordHelperText('');
+
         try {
             await firebase.auth().sendPasswordResetEmail(email);
             closeDialog();
         } catch(error) {
-            console.error(error);
+            handleErrors(error);
+        } finally {
+            setIsProcessing(false);
         }
     }
 
     const validateEmail = () => {
-        // TODO: validate the user's email address
-        setEmailIsValid(true);
+        const regexTestResult = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/.test(email);
+        setEmailIsValid(regexTestResult);
+        setEmailHelperText(regexTestResult ? '' : EmailErrorStrings['auth/invalid-email']);
     }
 
     const handleErrors = (error: firebase.auth.Error) => {
-        switch(error.code) {
-            default:
-                setEmailHelperText('Unknown error. Please try again later.');
-                setEmailError(true);
+        console.error(error);
 
+        if(error.code in EmailErrorStrings) {
+            setEmailHelperText(EmailErrorStrings[error.code]);
+        }
+
+        if(error.code in PasswordErrorStrings) {
+            setPasswordHelperText(PasswordErrorStrings[error.code]);
         }
     }
 
     const registerNewUser = async () => {
+        setIsProcessing(true);
+        setEmailHelperText('');
+        setPasswordHelperText('');
+
         try {
             await firebase.auth().createUserWithEmailAndPassword(email, password);
             firebase.auth().currentUser?.sendEmailVerification();
             closeDialog();
         } catch(error) {
             handleErrors(error);
+        } finally {
+            setIsProcessing(false);
+        }
+    }
+
+    const handleKeyPress = (event: React.KeyboardEvent) => {
+        if(
+            event.key === 'Enter'
+            && emailIsValid
+            && passwordIsValid
+        ) { 
+            ActionButtonFunction[tabValue]();
         }
     }
 
@@ -193,33 +232,33 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Tab label="I forgot my password" className={classes.invisibleTab} />
                 </Tabs>
             </AppBar>
-            <DialogContent>
+            <DialogContent onKeyPress={handleKeyPress}>
                 {tabValue !== 2 && 
                     <Box className={classes.ssoBox} my={4} px={4}>
                         <Button 
                             className={classes.ssoButton}
-                            variant='contained' 
+                            disabled={isProcessing}
                             onClick={() => handleClickSsoLogin('facebook')} 
                             startIcon={<FaFacebook color='#4267b2' />}
-                            data-provider='facebook'
+                            variant='contained' 
                         >                                    
                             {actionText + ' with Facebook'}
                         </Button>
                         <Button 
                             className={classes.ssoButton}
-                            variant='contained' 
+                            disabled={isProcessing}
                             onClick={() => handleClickSsoLogin('google')}
                             startIcon={<FcGoogle />}
-                            data-provider='google'
+                            variant='contained' 
                         >                                    
                             {actionText + ' with Google'}
                         </Button>
                         <Button 
                             className={classes.ssoButton}
-                            variant='contained'
+                            disabled={isProcessing}
                             startIcon={<FaTwitter color='#38A1F3' />}
                             onClick={() => handleClickSsoLogin('twitter')}
-                            data-provider='twitter'
+                            variant='contained'
                         >                                    
                             {actionText + ' with Twitter'}
                         </Button>
@@ -240,21 +279,22 @@ export default function AuthDialog(props: AuthDialogProps) {
                     type="email"
                     value={email}
                     fullWidth
-                    onChange={
-                        e => {
-                            setEmail(e.target.value);
-                            validateEmail();
-                        }
-                    }
+                    onChange={(e) => {
+                        setEmail(e.target.value);
+                    }}
+                    onBlur={(e) => {
+                        setEmail(e.target.value);
+                        validateEmail();
+                    }}
                     helperText={emailHelperText}
-                    error={emailError}
+                    error={emailHelperText !== ''}
                     required
-                    disabled={formIsProcessing}
+                    disabled={isProcessing}
                 />
                 {tabValue !== 2 &&
                     <PasswordField
-                        disabled={formIsProcessing}
-                        handleErrors={HandlePasswordErrors}
+                        disabled={isProcessing}
+                        handleErrors={(errorText) => setPasswordHelperText(errorText)}
                         helperText={passwordHelperText}
                         label='Current Password'
                         password={password}
@@ -268,13 +308,13 @@ export default function AuthDialog(props: AuthDialogProps) {
                 </DialogContentText>
                 <DialogActions>
                     <Button 
-                        disabled={formIsProcessing}
+                        disabled={isProcessing}
                         onClick={closeDialog}
                     >
                         Cancel
                     </Button>
                     <Button 
-                        disabled={!passwordIsValid || !emailIsValid || formIsProcessing}
+                        disabled={!passwordIsValid || !emailIsValid || isProcessing}
                         id="action-button" 
                         onClick={() => ActionButtonFunction[tabValue]()} 
                         color="secondary"
