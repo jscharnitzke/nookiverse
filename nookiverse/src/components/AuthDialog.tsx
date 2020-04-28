@@ -9,19 +9,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
 import Link from '@material-ui/core/Link';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import TextField from '@material-ui/core/TextField';
-
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { FaFacebook } from 'react-icons/fa';
 import { FaTwitter } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -30,6 +21,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import PasswordField from './PasswordField';
 
 type AuthDialogProps = {
     isOpen: boolean,
@@ -74,10 +66,7 @@ export default function AuthDialog(props: AuthDialogProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailHelperText, setEmailHelperText] = useState('');
-    const [passwordHelperText, setPasswordHelperText] =  useState('');
     const [emailError, setEmailError] = useState(false);
-    const [passwordError,  setPasswordError] =  useState(false);
-    const [showPassword, setShowPassword] = useState(false);
 
     // re-render if the parent has changed which tab should be opened on init
     useEffect(() => {
@@ -87,6 +76,8 @@ export default function AuthDialog(props: AuthDialogProps) {
 
     const closeDialog = () => {
         props.handleClickDialogClosed();
+        // reset selected tab and associated action text if the users cancels so that
+        // current settings aren't retained if they bring the dialog back up again
         setTabValue(props.defaultTab);
         setActionText(actionTextStrings[props.defaultTab]);
     }
@@ -94,10 +85,10 @@ export default function AuthDialog(props: AuthDialogProps) {
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setActionText(actionTextStrings[newTabValue]);
         setTabValue(newTabValue);
+        setEmail('');
         setEmailError(false);
         setEmailHelperText('');
-        setPasswordError(false);
-        setPasswordHelperText('');
+        setPassword('');
     }
     
     const handleClickLogInGoogle = async () => {
@@ -125,14 +116,6 @@ export default function AuthDialog(props: AuthDialogProps) {
         event.preventDefault();
         setTabValue(2);
         setActionText('reset password');
-    }
-
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    }
-
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
     }
 
     const handleClickActionButton = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -176,30 +159,14 @@ export default function AuthDialog(props: AuthDialogProps) {
     }
 
     const validateEmail = () => {
-
-    }
-
-    const validatePassword = () => {
-        if(password.length < 12) {
-            setPasswordHelperText('Password must be at least 12 characters');
-            setPasswordError(true);
-        } else {
-            setPasswordHelperText('');
-            setPasswordError(false);
-        }
+        // TODO: validate the user's email address
     }
 
     const handleErrors = (error: firebase.auth.Error) => {
         switch(error.code) {
-            case 'auth/weak-password':
-                setPasswordHelperText(error.message);
-                setPasswordError(true);
-                break;
             default:
                 setEmailHelperText('Unknown error. Please try again later.');
-                setPasswordHelperText('Unknown error. Please try again later.');
                 setEmailError(true);
-                setPasswordError(true);
 
         }
     }
@@ -247,7 +214,6 @@ export default function AuthDialog(props: AuthDialogProps) {
                             variant='contained'
                             startIcon={<FaTwitter color='#38A1F3' />}
                             onClick={handleClickLogInTwitter}
-                            disabled
                         >                                    
                             {actionText + ' with Twitter'}
                         </Button>
@@ -266,6 +232,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                     id="email"
                     label="Email Address"
                     type="email"
+                    value={email}
                     fullWidth
                     onChange={
                         e => {
@@ -278,32 +245,12 @@ export default function AuthDialog(props: AuthDialogProps) {
                     required
                 />
                 {tabValue !== 2 &&
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="password" required>Password</InputLabel>
-                        <Input
-                            id="password"
-                            type={showPassword ? 'text' : 'password'}
-                            value={password}
-                            required
-                            onChange={e => {
-                                setPassword(e.target.value);
-                                validatePassword();
-                            }}
-                            error={passwordError}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visilibity"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                        <FormHelperText error={passwordError}>{passwordHelperText}</FormHelperText>
-                    </FormControl>
+                    <PasswordField
+                        password={password}
+                        passwordLabel='Current Password'
+                        setPassword={setPassword}
+                        shouldValidate={tabValue === 1}
+                    />
                 }
                 <DialogContentText className={classes.dialogText} hidden={tabValue !== 0}>
                     <Link href='#' onClick={handleClickResetPassword}>I forgot my password</Link>
