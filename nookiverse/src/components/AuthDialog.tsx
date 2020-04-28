@@ -29,6 +29,12 @@ type AuthDialogProps = {
     handleClickDialogClosed: Function
 }
 
+const ProviderObject:{[key:string]: any} = {
+    'google': firebase.auth.GoogleAuthProvider,
+    'facebook': firebase.auth.FacebookAuthProvider,
+    'twitter': firebase.auth.TwitterAuthProvider
+}
+
 const actionTextStrings = [
     'log in',
     'sign up',
@@ -63,10 +69,17 @@ export default function AuthDialog(props: AuthDialogProps) {
     const classes = useStyles();
     const [tabValue, setTabValue] = useState(props.defaultTab);
     const [actionText, setActionText] = useState(actionTextStrings[tabValue]);
+
+    const [formIsProcessing, setFormIsProcessing] = useState(false);
+
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [emailHelperText, setEmailHelperText] = useState('');
+    const [emailIsValid, setEmailIsValid] = useState(false);
     const [emailError, setEmailError] = useState(false);
+
+    const [password, setPassword] = useState('');
+    const [passwordHelperText, setPasswordHelperText] = useState('');
+    const [passwordIsValid, setPasswordIsValid] = useState(false);
 
     // re-render if the parent has changed which tab should be opened on init
     useEffect(() => {
@@ -84,55 +97,44 @@ export default function AuthDialog(props: AuthDialogProps) {
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
         setActionText(actionTextStrings[newTabValue]);
-        setTabValue(newTabValue);
         setEmail('');
         setEmailError(false);
         setEmailHelperText('');
+        setEmailIsValid(false);
         setPassword('');
+        setPasswordIsValid(false);
+        setTabValue(newTabValue);
     }
-    
-    const handleClickLogInGoogle = async () => {
-        const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-        await firebase.auth().signInWithPopup(googleAuthProvider);
+
+    const HandlePasswordErrors = (errorText: string) => {
+        setPasswordHelperText(errorText);
     }
-    
-    const handleClickLogInFacebook = async () => {
-        const facebookAuthProvider = new firebase.auth.FacebookAuthProvider();
-        await firebase.auth().signInWithPopup(facebookAuthProvider);
-    }
-    
-    const handleClickLogInTwitter = async () => {
-        const twitterAuthProvider = new firebase.auth.TwitterAuthProvider();
-    
+
+    const handleClickSsoLogin = async (provider: string) => {
+        setFormIsProcessing(true);
+
         try {
-            await firebase.auth().signInWithPopup(twitterAuthProvider);
+            const authProvider = new ProviderObject[provider]();
+            await firebase.auth().signInWithPopup(authProvider);
             closeDialog();
         } catch(error) {
             console.error(error);
+        } finally {
+            setFormIsProcessing(false);
         }
     }
-
+    
     const handleClickResetPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         setTabValue(2);
         setActionText('reset password');
     }
 
-    const handleClickActionButton = (event: React.MouseEvent<HTMLButtonElement>) => {
-        switch(tabValue) {
-            case 0:
-                logInLocal();
-                break;
-            case 1:
-                registerLocal();
-                break;
-            case 2:
-                resetPassword();
-                break;
-            default:
-                console.error('Invalid tab selected');
-        }
-    }
+    const ActionButtonFunction = [
+        () => logInLocal(),
+        () => registerLocal(),
+        () => resetPassword()
+    ];
     
     const logInLocal = async () => {
         try {
@@ -160,6 +162,7 @@ export default function AuthDialog(props: AuthDialogProps) {
 
     const validateEmail = () => {
         // TODO: validate the user's email address
+        setEmailIsValid(true);
     }
 
     const handleErrors = (error: firebase.auth.Error) => {
@@ -196,16 +199,18 @@ export default function AuthDialog(props: AuthDialogProps) {
                         <Button 
                             className={classes.ssoButton}
                             variant='contained' 
-                            onClick={handleClickLogInFacebook} 
+                            onClick={() => handleClickSsoLogin('facebook')} 
                             startIcon={<FaFacebook color='#4267b2' />}
+                            data-provider='facebook'
                         >                                    
                             {actionText + ' with Facebook'}
                         </Button>
                         <Button 
                             className={classes.ssoButton}
                             variant='contained' 
-                            onClick={handleClickLogInGoogle}
+                            onClick={() => handleClickSsoLogin('google')}
                             startIcon={<FcGoogle />}
+                            data-provider='google'
                         >                                    
                             {actionText + ' with Google'}
                         </Button>
@@ -213,7 +218,8 @@ export default function AuthDialog(props: AuthDialogProps) {
                             className={classes.ssoButton}
                             variant='contained'
                             startIcon={<FaTwitter color='#38A1F3' />}
-                            onClick={handleClickLogInTwitter}
+                            onClick={() => handleClickSsoLogin('twitter')}
+                            data-provider='twitter'
                         >                                    
                             {actionText + ' with Twitter'}
                         </Button>
@@ -243,12 +249,17 @@ export default function AuthDialog(props: AuthDialogProps) {
                     helperText={emailHelperText}
                     error={emailError}
                     required
+                    disabled={formIsProcessing}
                 />
                 {tabValue !== 2 &&
                     <PasswordField
+                        disabled={formIsProcessing}
+                        handleErrors={HandlePasswordErrors}
+                        helperText={passwordHelperText}
+                        label='Current Password'
                         password={password}
-                        passwordLabel='Current Password'
                         setPassword={setPassword}
+                        setPasswordIsValid={setPasswordIsValid}
                         shouldValidate={tabValue === 1}
                     />
                 }
@@ -256,10 +267,19 @@ export default function AuthDialog(props: AuthDialogProps) {
                     <Link href='#' onClick={handleClickResetPassword}>I forgot my password</Link>
                 </DialogContentText>
                 <DialogActions>
-                    <Button onClick={closeDialog}>
+                    <Button 
+                        disabled={formIsProcessing}
+                        onClick={closeDialog}
+                    >
                         Cancel
                     </Button>
-                    <Button id="action-button" variant="outlined" onClick={handleClickActionButton} color="secondary">
+                    <Button 
+                        disabled={!passwordIsValid || !emailIsValid || formIsProcessing}
+                        id="action-button" 
+                        onClick={() => ActionButtonFunction[tabValue]()} 
+                        color="secondary"
+                        variant="outlined" 
+                    >
                         { actionText }
                     </Button>
                     <ReCAPTCHA

@@ -12,6 +12,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import VpnKey from '@material-ui/icons/VpnKey';
 
 import PasswordField from '../components/PasswordField';
+import SimpleAlertDialog from '../components/SimpleAlertDialog';
 
 import * as firebase from 'firebase';
 import 'firebase/auth';
@@ -31,10 +32,19 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 )
 
+const ReauthErrorStrings:{[key: string]: string} = {
+    'auth/wrong-password': 'This password is incorrect'
+}
+
 export default function ChangePasswordCard() {
     const classes = useStyles();
     const [currentPassword, setCurrentPassword] = useState('');
+    const [currentPasswordHelperText, setCurrentPasswordHelperText] = useState('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [newPassword, setNewPassword] = useState('');
+    const [newPasswordHelperText, setNewPasswordHelperText] = useState('');
+    const [newPasswordIsValid, setNewPasswordIsValid] = useState(false);
 
     const handleClickChangePassword = async () => {
         const user = firebase.auth().currentUser;
@@ -44,16 +54,20 @@ export default function ChangePasswordCard() {
         }
 
         const credential = firebase.auth.EmailAuthProvider.credential(
-            user.email,
+            user?.email,
             currentPassword
         );
 
         try {
+            setIsProcessing(true);
             await user.reauthenticateWithCredential(credential);
-            user.updatePassword(newPassword);
+            await user.updatePassword(newPassword);
+            setIsDialogOpen(true);
             // TODO: add feedback mechanism so the user knows that their password has changed
         } catch(error) {
-            console.error(error);
+            setCurrentPasswordHelperText(ReauthErrorStrings[error.code]);
+        } finally {
+            setIsProcessing(false);
         }
     }
 
@@ -66,15 +80,22 @@ export default function ChangePasswordCard() {
             <CardContent>
                 <Box className={classes.toolBox}>
                     <PasswordField
+                        disabled={isProcessing}
+                        label='Current Password'
+                        handleErrors={(errorText: string) => setCurrentPasswordHelperText(errorText)}
+                        helperText={currentPasswordHelperText}
                         password={currentPassword}
-                        passwordLabel='Current Password'
                         setPassword={setCurrentPassword}
                         shouldValidate={false}
                     />
                     <PasswordField
+                        disabled={isProcessing}
+                        label='New Password'
+                        handleErrors={(errorText: string) => setNewPasswordHelperText(errorText)}
+                        helperText={newPasswordHelperText}
                         password={newPassword}
-                        passwordLabel='New Password'
                         setPassword={setNewPassword}
+                        setPasswordIsValid={setNewPasswordIsValid}
                     />
                 </Box>
             </CardContent>
@@ -84,10 +105,17 @@ export default function ChangePasswordCard() {
                     color='secondary'
                     className={classes.actionButton} 
                     onClick={handleClickChangePassword}
+                    disabled={!newPasswordIsValid || isProcessing}
                 >
                     Change Password
                 </Button>
             </CardActions>
+            <SimpleAlertDialog
+                close={() => setIsDialogOpen(false)}
+                isOpen={isDialogOpen}
+                title="Password Changed Successfully"
+                text="Your password has been changed. Don't forget to use the new one to log in!"
+            />
         </Card>
     );
 }

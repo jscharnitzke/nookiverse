@@ -11,11 +11,17 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+type CallbackFunctionHandlePasswordErrors = (errorText: string) => void;
+
 type PasswordFieldProps = {
+    disabled: boolean,
+    handleErrors: CallbackFunctionHandlePasswordErrors,
+    helperText: string,
+    label: string,
     password: string,
-    passwordLabel: string,
     setPassword: Function,
-    shouldValidate: boolean
+    setPasswordIsValid: Function,
+    shouldValidate: boolean,
 }
 
 const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,8 +29,6 @@ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => 
 }
 
 export default function PasswordField(props: PasswordFieldProps) {
-    const [passwordError,  setPasswordError] =  useState(false);
-    const [passwordHelperText, setPasswordHelperText] =  useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     const validatePassword = () => {
@@ -32,13 +36,13 @@ export default function PasswordField(props: PasswordFieldProps) {
     }
 
     const passwordTooShort = () => {
-        setPasswordHelperText('Password must be at least 12 characters');
-        setPasswordError(true);
+        props.handleErrors('Password must be at least 12 characters');
+        props.setPasswordIsValid(false);
     }
     
     const passwordIsValid = () => {
-        setPasswordHelperText('');
-        setPasswordError(false);
+        props.handleErrors('');
+        props.setPasswordIsValid(true);
     }
     
     const handleClickShowPassword = () => {
@@ -46,8 +50,8 @@ export default function PasswordField(props: PasswordFieldProps) {
     }
 
     return (
-        <FormControl fullWidth>
-            <InputLabel htmlFor="password" required>{props.passwordLabel}</InputLabel>
+        <FormControl fullWidth disabled={props.disabled}>
+            <InputLabel htmlFor="password" required>{props.label}</InputLabel>
             <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -57,7 +61,7 @@ export default function PasswordField(props: PasswordFieldProps) {
                     props.setPassword(e.target.value);
                     validatePassword();
                 }}
-                error={passwordError}
+                error={props.helperText !== ''}
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
@@ -70,21 +74,29 @@ export default function PasswordField(props: PasswordFieldProps) {
                     </InputAdornment>
                 }
             />
-            <FormHelperText error={passwordError}>{passwordHelperText}</FormHelperText>
+            <FormHelperText error={props.helperText !== ''}>{props.helperText}</FormHelperText>
         </FormControl>
     )
 }
 
 PasswordField.propTypes = {
+    disabled: PropTypes.bool.isRequired,
+    handleErrors: PropTypes.func.isRequired,
+    helperText: PropTypes.string.isRequired,
+    label: PropTypes.string,
     password: PropTypes.string.isRequired,
-    passwordLabel: PropTypes.string,
     setPassword: PropTypes.func.isRequired,
+    setPasswordIsValid: PropTypes.func.isRequired,
     shouldValidate: PropTypes.bool.isRequired
 }
 
 PasswordField.defaultProps = {
+    disabled: false,
+    handleErrors: () => {throw new Error('handlePasswordErrors must be overridden'); },
+    helperText: '',
+    label: 'Password',
     password: '',
-    passwordLabel: 'Password',
     setPassword: () => {throw new Error('setPassword must be overridden'); },
+    setPasswordIsValid: () => null,
     shouldValidate: true
 }
