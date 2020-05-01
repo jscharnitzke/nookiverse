@@ -45,7 +45,7 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
         <IconButton aria-label="tool-counter">
           <SvgIcon
             component={SvgAcIconsGyroidBlack}
-            viewBox="250 150 350 350"
+            viewBox="230 150 350 350"
             color="secondary"
           />
         </IconButton>

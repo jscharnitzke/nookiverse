@@ -49,3 +49,11 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+nav a {
+  color: #6b5c43;
+}
+
+nav a:hover {
+  text-decoration: none;
+}
