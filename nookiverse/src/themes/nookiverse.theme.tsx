@@ -6,21 +6,13 @@ const typography = new Typography({
   googleFonts: [
     {
       name: 'Baloo Bhaina 2',
-      styles: [
-        '400',
-        '500',
-        '700'
-      ]
+      styles: ['400', '500', '700'],
     },
     {
       name: 'Roboto',
-      styles: [
-        '400',
-        '500',
-        '700'
-      ]
-    }
-  ]
+      styles: ['400', '500', '700'],
+    },
+  ],
 });
 typography.injectStyles();
 injectFonts(typography);
@@ -38,12 +30,11 @@ export const theme = createMuiTheme({
     tonalOffset: 0.2,
     background: {
       default: '#e9f5eb',
-      paper: '#fff'
-    }
+      paper: '#fff',
+    },
   },
   typography: {
     fontFamily: ['Baloo Bhaina 2', 'Roboto', 'Arial'].join(','),
   },
   spacing: 8,
 });
-

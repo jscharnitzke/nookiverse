@@ -7,7 +7,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import { ThemeProvider, makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {
+  ThemeProvider,
+  makeStyles,
+  createStyles,
+  Theme,
+} from '@material-ui/core/styles';
 import { theme } from './themes/nookiverse.theme';
 
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
@@ -31,24 +36,25 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexGrow: 1
+      flexGrow: 1,
     },
     drawer: {
       wdith: drawerWidth,
-      flexShrink: 0
+      flexShrink: 0,
     },
     drawerPaper: {
-      width: drawerWidth
+      width: drawerWidth,
     },
     drawerContainer: {
-      overflow: 'auto'
+      overflow: 'auto',
     },
     content: {
       flexGrow: 1,
       padding: 0,
       marginLeft: drawerWidth,
-    }
-}));
+    },
+  })
+);
 
 function App() {
   const classes = useStyles();
@@ -59,9 +65,13 @@ function App() {
         <CssBaseline />
         <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
           <Router>
-            <AppHeaderBar title='Nookiverse' />
-            <Drawer variant="permanent" className={classes.drawer} classes={{paper: classes.drawerPaper}}>
-              <Toolbar/>
+            <AppHeaderBar title="Nookiverse" />
+            <Drawer
+              variant="permanent"
+              className={classes.drawer}
+              classes={{ paper: classes.drawerPaper }}
+            >
+              <Toolbar />
               <div className={classes.drawerContainer}>
                 <List>
                   <Link to="/">

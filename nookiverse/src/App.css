@@ -24,6 +24,11 @@
   color: white;
 }
 
+.MuiSvgIcon-root,
+.MuiSvgIcon-root:not(:root) {
+  overflow: visible;
+}
+
 .App-link {
   color: #61dafb;
 }
