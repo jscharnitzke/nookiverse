@@ -12,7 +12,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import NavLinks from './NavLinks';
+import NavLinkList from './NavLinkList';
 
 const drawerWidth = 240;
 
@@ -58,7 +58,7 @@ export default function NavDrawer(props: NavDrawerProps) {
           open={props.isOpen}
           variant="temporary"
         >
-          <NavLinks />
+          <NavLinkList />
         </Drawer>
       </Hidden>
       <Hidden xsDown implementation="css">
@@ -68,7 +68,7 @@ export default function NavDrawer(props: NavDrawerProps) {
           variant="permanent"
         >
           <Toolbar />
-          <NavLinks />
+          <NavLinkList />
         </Drawer>
       </Hidden>
     </nav>
