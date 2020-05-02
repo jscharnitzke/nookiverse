@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
+  const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false);
+
+  const toggleNavDrawer = () => {
+    setNavDrawerIsOpen(!navDrawerIsOpen);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -53,8 +58,16 @@ function App() {
         <CssBaseline />
         <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
           <Router>
-            <AppHeaderBar title="Nookiverse" />
-            <NavDrawer />
+            <AppHeaderBar
+              handleClickMenuIcon={toggleNavDrawer}
+              title="Nookiverse"
+            />
+            <NavDrawer
+              isOpen={navDrawerIsOpen}
+              handleCloseDrawer={() => {
+                setNavDrawerIsOpen(false);
+              }}
+            />
             <main className={classes.content}>
               <Toolbar />
               <Route exact path="/" component={Home} />

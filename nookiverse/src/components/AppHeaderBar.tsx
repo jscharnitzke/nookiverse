@@ -9,12 +9,18 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import SvgIcon from '@material-ui/core/SvgIcon';
 
+import MenuIcon from '@material-ui/icons/Menu';
+
 import ProfileControls from './ProfileControls';
 import SvgAcIconsGyroidBlack from './SvgAcIconsGyroidBlack';
 
+type HandleClickMenuIconFunction = (
+  event: React.MouseEvent<HTMLButtonElement>
+) => void;
+
 type AppHeaderBarProps = {
   title: string;
-  className?: string;
+  handleClickMenuIcon: HandleClickMenuIconFunction;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,6 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
       textAlign: 'left',
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
     },
   })
 );
@@ -39,6 +51,15 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
   return (
     <AppBar position="fixed" color="primary" className={classes.root}>
       <Toolbar>
+        <IconButton
+          aria-label="open drawer"
+          className={classes.menuButton}
+          color="inherit"
+          edge="start"
+          onClick={props.handleClickMenuIcon}
+        >
+          <MenuIcon />
+        </IconButton>
         <Typography variant="h6" className={classes.title}>
           {props.title}
         </Typography>
@@ -57,9 +78,12 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
 
 AppHeaderBar.propTypes = {
   title: PropTypes.string.isRequired,
-  className: PropTypes.string,
+  handleClickMenuIcon: PropTypes.func.isRequired,
 };
 
 AppHeaderBar.defaultProps = {
   title: 'Web App',
+  handleClickMenuIcon: () => {
+    throw new Error('handleClickMenuIcon must be overridden');
+  },
 };

@@ -1,27 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { IfFirebaseAuthed } from '@react-firebase/auth';
+import PropTypes from 'prop-types';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  createStyles,
+  Theme,
+  useTheme,
+} from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import SvgIcon from '@material-ui/core/SvgIcon';
+import Hidden from '@material-ui/core/Hidden';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import SvgHome from './SvgHome';
-import SvgAcIconsFurnitureBlack from './SvgAcIconsFurnitureBlack';
+import NavLinks from './NavLinks';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
-      wdith: drawerWidth,
-      flexShrink: 0,
+      [theme.breakpoints.up('sm')]: {
+        wdith: drawerWidth,
+        flexShrink: 0,
+      },
     },
     drawerPaper: {
       width: drawerWidth,
@@ -32,53 +33,56 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function NavDrawer() {
+type HandleCloseDrawerFunction = (event: React.MouseEvent) => void;
+
+type NavDrawerProps = {
+  isOpen: boolean;
+  handleCloseDrawer: HandleCloseDrawerFunction;
+};
+
+export default function NavDrawer(props: NavDrawerProps) {
   const classes = useStyles();
+  const theme = useTheme();
 
   return (
-    <Drawer
-      variant="permanent"
-      className={classes.drawer}
-      classes={{ paper: classes.drawerPaper }}
-    >
-      <Toolbar />
-      <nav className={classes.drawerContainer}>
-        <List>
-          <Link to="/">
-            <ListItem button key="home">
-              <ListItemIcon>
-                <SvgIcon
-                  component={SvgHome}
-                  viewBox="0 10 40 40"
-                  color="primary"
-                />
-              </ListItemIcon>
-              <ListItemText primary="Home" color="secondary" />
-            </ListItem>
-          </Link>
-          <Link to="/catalog">
-            <ListItem button key="catalog">
-              <ListItemIcon>
-                <SvgIcon
-                  component={SvgAcIconsFurnitureBlack}
-                  viewBox="100 100 400 400"
-                  color="primary"
-                />
-              </ListItemIcon>
-              <ListItemText primary="Catalog" color="secondary" />
-            </ListItem>
-          </Link>
-          <IfFirebaseAuthed>
-            {() => (
-              <Link to="/admin">
-                <ListItem button key="admin">
-                  <ListItemText primary="Admin" />
-                </ListItem>
-              </Link>
-            )}
-          </IfFirebaseAuthed>
-        </List>
-      </nav>
-    </Drawer>
+    <nav className={classes.drawerContainer}>
+      <Hidden smUp implementation="css">
+        <Drawer
+          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+          className={classes.drawer}
+          classes={{ paper: classes.drawerPaper }}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          onClose={props.handleCloseDrawer}
+          open={props.isOpen}
+          variant="temporary"
+        >
+          <NavLinks />
+        </Drawer>
+      </Hidden>
+      <Hidden xsDown implementation="css">
+        <Drawer
+          classes={{ paper: classes.drawerPaper }}
+          open
+          variant="permanent"
+        >
+          <Toolbar />
+          <NavLinks />
+        </Drawer>
+      </Hidden>
+    </nav>
   );
 }
+
+NavDrawer.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  handleCloseDrawer: PropTypes.func.isRequired,
+};
+
+NavDrawer.defaultProps = {
+  isOpen: false,
+  handleCloseDrawer: () => {
+    throw new Error('setIsOpen must be overridden');
+  },
+};
