@@ -42,14 +42,12 @@ const ActionTextStrings = [
 ];
 
 const EmailErrorStrings: {[key: string]: string} = {
-    'auth/user-not-found': 'Your email or password is incorrect',
+    'auth/user-not-found': 'Your email is incorrect',
     'auth/invalid-email': 'Something doesn\'t look right!',
-    'auth/wrong-password': 'Your email or password is incorrect',
 }
 
 const PasswordErrorStrings: {[key:string]: string} = {
-    'auth/user-not-found': 'Your email or password is incorrect',
-    'auth/wrong-password': 'Your email or password is incorrect',
+    'auth/wrong-password': 'Your password is incorrect',
 }
 
 const useStyles = makeStyles((theme: Theme) =>

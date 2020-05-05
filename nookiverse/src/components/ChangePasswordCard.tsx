@@ -54,7 +54,7 @@ export default function ChangePasswordCard() {
         }
 
         const credential = firebase.auth.EmailAuthProvider.credential(
-            user?.email,
+            user.email,
             currentPassword
         );
 
@@ -63,7 +63,6 @@ export default function ChangePasswordCard() {
             await user.reauthenticateWithCredential(credential);
             await user.updatePassword(newPassword);
             setIsDialogOpen(true);
-            // TODO: add feedback mechanism so the user knows that their password has changed
         } catch(error) {
             setCurrentPasswordHelperText(ReauthErrorStrings[error.code]);
         } finally {
