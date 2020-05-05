@@ -109,6 +109,7 @@ export default function ChangePasswordCard() {
                     Change Password
                 </Button>
             </CardActions>
+            // TODO: Change this to a SnackBar
             <SimpleAlertDialog
                 close={() => setIsDialogOpen(false)}
                 isOpen={isDialogOpen}
