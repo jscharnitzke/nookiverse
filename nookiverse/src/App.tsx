@@ -29,6 +29,8 @@ import { FirebaseAuthProvider } from '@react-firebase/auth';
 import { firebaseConfig } from './firebase.config';
 import ToolDrawer from './components/ToolDrawer';
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -36,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     content: {
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: drawerWidth
+      },
       flexGrow: 1,
       padding: 0,
     },
@@ -72,18 +77,18 @@ function App() {
                 setNavDrawerIsOpen(false);
               }}
             />
-            <ToolDrawer
-              isOpen={toolDrawerIsOpen}
-              handleCloseDrawer={() => {
-                setToolDrawerIsOpen(false);
-              }}
-            />
             <main className={classes.content}>
               <Toolbar />
               <Route exact path="/" component={Home} />
               <PrivateRoute path="/admin" component={Admin} />
               <PrivateRoute path="/profile" component={Profile} />
             </main>
+            <ToolDrawer
+              isOpen={toolDrawerIsOpen}
+              handleCloseDrawer={() => {
+                setToolDrawerIsOpen(false);
+              }}
+            />
           </Router>
         </FirebaseAuthProvider>
       </div>
