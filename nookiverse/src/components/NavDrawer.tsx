@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
       [theme.breakpoints.up('sm')]: {
-        wdith: drawerWidth,
+        width: drawerWidth,
         flexShrink: 0,
       },
     },

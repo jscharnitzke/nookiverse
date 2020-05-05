@@ -27,8 +27,7 @@ import 'firebase/auth';
 import * as firebase from 'firebase/app';
 import { FirebaseAuthProvider } from '@react-firebase/auth';
 import { firebaseConfig } from './firebase.config';
-
-const drawerWidth = 240;
+import ToolDrawer from './components/ToolDrawer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flexGrow: 1,
       padding: 0,
-      marginLeft: drawerWidth,
     },
   })
 );
@@ -47,9 +45,14 @@ const useStyles = makeStyles((theme: Theme) =>
 function App() {
   const classes = useStyles();
   const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false);
+  const [toolDrawerIsOpen, setToolDrawerIsOpen] = useState(false);
 
   const toggleNavDrawer = () => {
     setNavDrawerIsOpen(!navDrawerIsOpen);
+  };
+
+  const toggleToolDrawer = () => {
+    setToolDrawerIsOpen(!toolDrawerIsOpen);
   };
 
   return (
@@ -60,12 +63,19 @@ function App() {
           <Router>
             <AppHeaderBar
               handleClickMenuIcon={toggleNavDrawer}
+              handleClickToolIcon={toggleToolDrawer}
               title="Nookiverse"
             />
             <NavDrawer
               isOpen={navDrawerIsOpen}
               handleCloseDrawer={() => {
                 setNavDrawerIsOpen(false);
+              }}
+            />
+            <ToolDrawer
+              isOpen={toolDrawerIsOpen}
+              handleCloseDrawer={() => {
+                setToolDrawerIsOpen(false);
               }}
             />
             <main className={classes.content}>

@@ -14,13 +14,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ProfileControls from './ProfileControls';
 import SvgAcIconsGyroidBlack from './SvgAcIconsGyroidBlack';
 
-type HandleClickMenuIconFunction = (
+type HandleClickIconFunction = (
   event: React.MouseEvent<HTMLButtonElement>
 ) => void;
 
 type AppHeaderBarProps = {
-  title: string;
-  handleClickMenuIcon: HandleClickMenuIconFunction;
+  title: string,
+  handleClickMenuIcon: HandleClickIconFunction,
+  handleClickToolIcon: HandleClickIconFunction
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,9 +66,10 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
         </Typography>
         <IconButton aria-label="tool-counter">
           <SvgIcon
-            component={SvgAcIconsGyroidBlack}
-            viewBox="230 150 350 350"
             color="secondary"
+            component={SvgAcIconsGyroidBlack}
+            onClick={props.handleClickToolIcon}
+            viewBox="230 150 350 350"
           />
         </IconButton>
         <ProfileControls isLoggedIn={true} />
@@ -79,11 +81,15 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
 AppHeaderBar.propTypes = {
   title: PropTypes.string.isRequired,
   handleClickMenuIcon: PropTypes.func.isRequired,
+  handleClickToolIcon: PropTypes.func.isRequired
 };
 
 AppHeaderBar.defaultProps = {
   title: 'Web App',
   handleClickMenuIcon: () => {
+    throw new Error('handleClickMenuIcon must be overridden');
+  },
+  handleClickToolIcon: () => {
     throw new Error('handleClickMenuIcon must be overridden');
   },
 };
