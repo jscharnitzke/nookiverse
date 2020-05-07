@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 
+import { CookiesProvider } from 'react-cookie';
+
 import {
   ThemeProvider,
   makeStyles,
@@ -62,36 +64,38 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
-          <Router>
-            <AppHeaderBar
-              handleClickMenuIcon={toggleNavDrawer}
-              handleClickToolIcon={toggleToolDrawer}
-              title="Nookiverse"
-            />
-            <NavDrawer
-              isOpen={navDrawerIsOpen}
-              handleCloseDrawer={() => {
-                setNavDrawerIsOpen(false);
-              }}
-            />
-            <main className={classes.content}>
-              <Toolbar />
-              <Route exact path="/" component={Home} />
-              <PrivateRoute path="/admin" component={Admin} />
-              <PrivateRoute path="/profile" component={Profile} />
-            </main>
-            <ToolDrawer
-              isOpen={toolDrawerIsOpen}
-              handleCloseDrawer={() => {
-                setToolDrawerIsOpen(false);
-              }}
-            />
-          </Router>
-        </FirebaseAuthProvider>
-      </div>
+      <CookiesProvider>
+        <div className={classes.root}>
+          <CssBaseline />
+          <FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
+            <Router>
+              <AppHeaderBar
+                handleClickMenuIcon={toggleNavDrawer}
+                handleClickToolIcon={toggleToolDrawer}
+                title="Nookiverse"
+              />
+              <NavDrawer
+                isOpen={navDrawerIsOpen}
+                handleCloseDrawer={() => {
+                  setNavDrawerIsOpen(false);
+                }}
+              />
+              <main className={classes.content}>
+                <Toolbar />
+                <Route exact path="/" component={Home} />
+                <PrivateRoute path="/admin" component={Admin} />
+                <PrivateRoute path="/profile" component={Profile} />
+              </main>
+              <ToolDrawer
+                isOpen={toolDrawerIsOpen}
+                handleCloseDrawer={() => {
+                  setToolDrawerIsOpen(false);
+                }}
+              />
+            </Router>
+          </FirebaseAuthProvider>
+        </div>
+      </CookiesProvider>
     </ThemeProvider>
   );
 }

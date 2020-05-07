@@ -17,13 +17,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import AxeIcon from '../components/AxeIcon';
-import ButterflyNetIcon from '../components/ButterflyNetIcon';
-import FishingRodIcon from '../components/FishingRodIcon';
-import ShovelIcon from '../components/ShovelIcon';
-import SlingshotIcon from '../components/SlingshotIcon';
-import ToolCounter from '../components/ToolCounter';
-import WateringCanIcon from '../components/WateringCanIcon';
+import ToolCounter from './ToolCounter';
+
+import AxeIcon from './icons/AxeIcon';
+import ButterflyNetIcon from './icons/ButterflyNetIcon';
+import FishingRodIcon from './icons/FishingRodIcon';
+import ShovelIcon from './icons/ShovelIcon';
+import SlingshotIcon from './icons/SlingshotIcon';
+import WateringCanIcon from './icons/WateringCanIcon';
 
 const drawerWidth = 240;
 
@@ -78,22 +79,22 @@ const ToolDrawer: FunctionComponent<ToolDrawerProps> = ({ isOpen, handleCloseDra
         </Toolbar>
         <Divider />
         <Box className={classes.drawerContainer}>
-          <ToolCounter maxDurability={30}>
+          <ToolCounter maxDurability={30} name='axe'>
               <SvgIcon component={AxeIcon} viewBox="60 60 360 360" />
           </ToolCounter>
-          <ToolCounter maxDurability={30}>
+          <ToolCounter maxDurability={30} name='net'>
               <SvgIcon component={ButterflyNetIcon} viewBox="60 60 360 360" />
           </ToolCounter>
-          <ToolCounter maxDurability={30}>
+          <ToolCounter maxDurability={30} name='fishing-rod'>
               <SvgIcon component={FishingRodIcon} viewBox="60 60 360 360" />
           </ToolCounter>
-          <ToolCounter maxDurability={100}>
+          <ToolCounter maxDurability={100} name='shovel'>
               <SvgIcon component={ShovelIcon} viewBox="28 28 150 150" />
           </ToolCounter>
-          <ToolCounter maxDurability={20}>
+          <ToolCounter maxDurability={20} name='slingshot'>
               <SvgIcon component={SlingshotIcon} viewBox="8 0 48 48" />
           </ToolCounter>
-          <ToolCounter maxDurability={60}>
+          <ToolCounter maxDurability={60} name='watering-can'>
               <SvgIcon component={WateringCanIcon} viewBox="60 60 360 360" />
           </ToolCounter>
         </Box>

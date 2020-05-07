@@ -1,6 +1,8 @@
 import React, { useState, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import { useCookies } from 'react-cookie';
+
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -14,7 +16,8 @@ import { FaMinus, FaPlus } from 'react-icons/fa';
 type ColorString = "inherit" | "default" | "disabled" | "primary" | "secondary" | "action" | "error" | undefined;
 
 type ToolCounterProps = {
-    maxDurability: number
+    maxDurability: number,
+    name: string
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -39,9 +42,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }));
 
-const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, children }) => {
+const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name, children }) => {
+    const [cookies, setCookie] = useCookies([name + '-counter']);
+
     const classes = useStyles();
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(cookies[name + '-counter'] ? +cookies[name + '-counter'] : 0);
     const [color, setColor] = useState('primary');
 
     const changeColor = (durability: number) => {
@@ -60,6 +65,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, child
         if(count < maxDurability) {
             setCount(count + 1);
             changeColor(count + 1);
+            setCookie(name + '-counter', count + 1, { path: '/' });
         }
     }
 
@@ -67,16 +73,18 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, child
         if(count > 0) {
             setCount(count - 1);
             changeColor(count - 1);
+            setCookie(name + '-counter', count - 1, { path: '/' });
         }
     }
 
     const handleClickReset = () => {
         setCount(0);
         changeColor(0);
+        setCookie(name + '-counter', 0, { path: '/' });
     }
 
     return (
-        <Box className={classes.flexColumn}>
+        <Box className={classes.flexColumn} aria-label={name + ' counter'}>
             <Box className={classes.flexRow}>
                 {count}
             </Box>
@@ -101,7 +109,8 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, child
 }
 
 ToolCounter.propTypes = {
-    maxDurability: PropTypes.number.isRequired
+    maxDurability: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired
 }
 
 ToolCounter.defaultProps = {

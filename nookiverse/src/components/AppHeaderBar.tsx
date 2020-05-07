@@ -12,7 +12,8 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import ProfileControls from './ProfileControls';
-import SvgAcIconsGyroidBlack from './SvgAcIconsGyroidBlack';
+
+import SvgAcIconsGyroidBlack from './icons/SvgAcIconsGyroidBlack';
 
 type HandleClickIconFunction = (
   event: React.MouseEvent<HTMLButtonElement>

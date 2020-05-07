@@ -8,8 +8,8 @@ import List from '@material-ui/core/List';
 
 import { AppLink } from './NavLink';
 import NavLink from './NavLink';
-import SvgHome from './SvgHome';
-import SvgAcIconsFurnitureBlack from './SvgAcIconsFurnitureBlack';
+import SvgHome from './icons/SvgHome';
+import SvgAcIconsFurnitureBlack from './icons/SvgAcIconsFurnitureBlack';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
