@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider, useCookies } from 'react-cookie';
 
 import {
   ThemeProvider,
@@ -52,14 +52,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function App() {
   const classes = useStyles();
+  const [cookies, setCookie] = useCookies(['toolDrawerIsOpen']);
+
   const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false);
-  const [toolDrawerIsOpen, setToolDrawerIsOpen] = useState(false);
+  const [toolDrawerIsOpen, setToolDrawerIsOpen] = useState(cookies['toolDrawerIsOpen'] === 'true');
 
   const toggleNavDrawer = () => {
     setNavDrawerIsOpen(!navDrawerIsOpen);
   };
 
   const toggleToolDrawer = () => {
+    setCookie('toolDrawerIsOpen', !toolDrawerIsOpen);
     setToolDrawerIsOpen(!toolDrawerIsOpen);
   };
 
@@ -91,6 +94,7 @@ function App() {
               <ToolDrawer
                 isOpen={toolDrawerIsOpen}
                 handleCloseDrawer={() => {
+                  setCookie('toolDrawerIsOpen', false);
                   setToolDrawerIsOpen(false);
                 }}
               />

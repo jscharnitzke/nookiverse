@@ -10,7 +10,6 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { FirestoreMutation } from '@react-firebase/firestore';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -47,11 +46,24 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name, children }) => {
-    const [cookies, setCookie] = useCookies([name + '-counter']);
+    const counterName = name + 'Count';
+    const [cookies, setCookie] = useCookies([counterName]);
 
     const classes = useStyles();
-    const [count, setCount] = useState(cookies[name + '-counter'] ? +cookies[name + '-counter'] : 0);
+    const [count, setCount] = useState(cookies[counterName] ? +cookies[counterName] : 0);
     const [color, setColor] = useState('primary');
+
+    firebase.auth().onAuthStateChanged(user => {
+        if(user && cookies[counterName]) {
+            upsertFirestoreRecord(count);
+        } else if(user) {
+            restoreCount();
+        }
+
+        return user;
+    }, (e: firebase.auth.Error) => {
+        console.error(e);
+    });
 
     const changeColor = (durability: number) => {
         if(durability === maxDurability) {
@@ -65,6 +77,13 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
         }
     }
 
+    const setCounterValue = (newValue: number) => {
+        setCount(newValue);
+        changeColor(newValue);
+        setCookie(counterName, newValue, { path: '/' });
+        upsertFirestoreRecord(newValue);
+    }
+
     const upsertFirestoreRecord = (newCount: number) => {
         if(!firebase.auth().currentUser) {
             return;
@@ -72,33 +91,37 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
 
         const userSettingsRef = firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid);
         const countObject: {[index: string]: number} = {};
-        countObject[name + 'Count'] = newCount;
+        countObject[counterName] = newCount;
         userSettingsRef.set(countObject, {merge: true});
+    }
+
+    const restoreCount = async () => {
+        if(!firebase.auth().currentUser) {
+            return;
+        }
+
+        const userSettingsDoc = await firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid).get();
+        const storedCount = userSettingsDoc.get(counterName);
+        
+        if(storedCount) {
+            setCounterValue(+storedCount);
+        }
     }
 
     const handleClickIncrementCount = () => {
         if(count < maxDurability) {
-            setCount(count + 1);
-            changeColor(count + 1);
-            setCookie(name + '-counter', count + 1, { path: '/' });
-            upsertFirestoreRecord(count + 1);
+            setCounterValue(count + 1);
         }
     }
 
     const handleClickDecrementCount =  () => {
         if(count > 0) {
-            setCount(count - 1);
-            changeColor(count - 1);
-            setCookie(name + '-counter', count - 1, { path: '/' });
-            upsertFirestoreRecord(count - 1);
+            setCounterValue(count - 1);
         }
     }
 
     const handleClickReset = () => {
-        setCount(0);
-        changeColor(0);
-        setCookie(name + '-counter', 0, { path: '/' });
-        upsertFirestoreRecord(0);
+        setCounterValue(0);
     }
 
     return (

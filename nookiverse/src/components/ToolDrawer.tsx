@@ -55,7 +55,7 @@ type ToolDrawerProps = {
   handleCloseDrawer: HandleCloseDrawerFunction;
 };
 
-const ToolDrawer: FunctionComponent<ToolDrawerProps> = ({ isOpen, handleCloseDrawer }) => {
+const ToolDrawer: FunctionComponent<ToolDrawerProps> = ({ isOpen, handleCloseDrawer }) => {    
     const classes = useStyles();
     const theme = useTheme();
 
