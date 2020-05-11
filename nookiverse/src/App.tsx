@@ -28,6 +28,7 @@ import { Profile } from './pages/Profile';
 import 'firebase/auth';
 import * as firebase from 'firebase/app';
 import { FirebaseAuthProvider } from '@react-firebase/auth';
+import { FirestoreProvider } from '@react-firebase/firestore';
 import { firebaseConfig } from './firebase.config';
 import ToolDrawer from './components/ToolDrawer';
 
@@ -64,6 +65,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <FirestoreProvider firebase={firebase} {...firebaseConfig}>
       <CookiesProvider>
         <div className={classes.root}>
           <CssBaseline />
@@ -96,6 +98,7 @@ function App() {
           </FirebaseAuthProvider>
         </div>
       </CookiesProvider>
+      </FirestoreProvider>
     </ThemeProvider>
   );
 }

@@ -10,6 +10,10 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
+import { FirestoreMutation } from '@react-firebase/firestore';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+
 import { AiOutlineTool } from 'react-icons/ai';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 
@@ -61,11 +65,23 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
         }
     }
 
+    const upsertFirestoreRecord = (newCount: number) => {
+        if(!firebase.auth().currentUser) {
+            return;
+        }
+
+        const userSettingsRef = firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid);
+        const countObject: {[index: string]: number} = {};
+        countObject[name + 'Count'] = newCount;
+        userSettingsRef.set(countObject, {merge: true});
+    }
+
     const handleClickIncrementCount = () => {
         if(count < maxDurability) {
             setCount(count + 1);
             changeColor(count + 1);
             setCookie(name + '-counter', count + 1, { path: '/' });
+            upsertFirestoreRecord(count + 1);
         }
     }
 
@@ -74,6 +90,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
             setCount(count - 1);
             changeColor(count - 1);
             setCookie(name + '-counter', count - 1, { path: '/' });
+            upsertFirestoreRecord(count - 1);
         }
     }
 
@@ -81,6 +98,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
         setCount(0);
         changeColor(0);
         setCookie(name + '-counter', 0, { path: '/' });
+        upsertFirestoreRecord(0);
     }
 
     return (
@@ -104,7 +122,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
             <Box className={classes.flexRow}>
                 <Button aria-label="reset counter" onClick={handleClickReset}>Reset</Button>
             </Box>
-        </Box>
+        </Box> 
     );
 }
 
