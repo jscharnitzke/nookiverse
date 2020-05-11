@@ -65,11 +65,12 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
         <Typography variant="h6" className={classes.title}>
           {props.title}
         </Typography>
-        <IconButton aria-label="tool-counter">
+        <IconButton aria-label="tool-counter"
+          onClick={props.handleClickToolIcon}
+        >
           <SvgIcon
             color="secondary"
             component={SvgAcIconsGyroidBlack}
-            onClick={props.handleClickToolIcon}
             viewBox="230 150 350 350"
           />
         </IconButton>

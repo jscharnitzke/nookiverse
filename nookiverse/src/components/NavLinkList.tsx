@@ -55,7 +55,7 @@ export default function NavLinkList() {
     <div className={classes.toolbar}>
       <List className={classes.linkText}>
         {publicLinks.map((link) => (
-          <NavLink link={link} />
+          <NavLink link={link} key={link.text} />
         ))}
       </List>
       <Divider />
@@ -63,7 +63,7 @@ export default function NavLinkList() {
         {() => (
           <List className={classes.linkText}>
             {privateLinks.map((link) => (
-              <NavLink link={link} />
+              <NavLink link={link} key={link.text} />
             ))}
           </List>
         )}
