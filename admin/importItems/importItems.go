@@ -8,13 +8,14 @@ import (
 	"log"
 	"os"
 
+	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
 )
 
 // An Item is an Animal Crossing item
 type Item struct {
-	SourceSheet          string        `json:"sourceSheet"`
+	Category             string        `json:"sourceSheet"`
 	Name                 string        `json:"name"`
 	PatternTitle         string        `json:"patternTitle"`
 	DIY                  bool          `json:"diy"`
@@ -81,6 +82,7 @@ func main() {
 
 	for _, item := range items {
 		_, err := client.Collection("items").Doc(item.Name).Set(ctx, map[string]interface{}{
+			"category":             item.Category,
 			"patternTitle":         item.PatternTitle,
 			"diy":                  item.DIY,
 			"patternCustomize":     item.PatternCustomize,
@@ -95,7 +97,7 @@ func main() {
 			"set":                  item.Set,
 			"series":               item.Series,
 			"customizationKitCost": item.CustomizationKitCost,
-		})
+		}, firestore.MergeAll)
 
 		if err != nil {
 			log.Fatalln(err)
@@ -118,7 +120,7 @@ func main() {
 				"buyPrice":      variant.BuyPrice,
 				"sellPrice":     variant.SellPrice,
 				"themes":        variant.Themes,
-			})
+			}, firestore.MergeAll)
 
 			if err != nil {
 				log.Fatalln(err)
