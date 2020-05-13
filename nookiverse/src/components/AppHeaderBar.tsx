@@ -13,7 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import ProfileControls from './ProfileControls';
 
-import SvgAcIconsGyroidBlack from './icons/SvgAcIconsGyroidBlack';
+import Tool from './icons/Tool';
 
 type HandleClickIconFunction = (
   event: React.MouseEvent<HTMLButtonElement>
@@ -70,8 +70,8 @@ export default function AppHeaderBar(props: AppHeaderBarProps) {
         >
           <SvgIcon
             color="secondary"
-            component={SvgAcIconsGyroidBlack}
-            viewBox="230 150 350 350"
+            viewBox="20 20 80 100"
+            component={Tool}
           />
         </IconButton>
         <ProfileControls isLoggedIn={true} />

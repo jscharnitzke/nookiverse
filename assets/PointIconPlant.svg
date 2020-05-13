@@ -1,19 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg color="#000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">  <image id="image0" width="64" height="64" x="0" y="0"
-    xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZ
-cwAADsMAAA7DAcdvqGQAAAAHdElNRQfkBQ0XETuAMNtYAAACOklEQVRo3u2XPUtbURjHf0nVoUKa
-gmnrUGyCxUIhHQTXDpJ2FoqDn8HFUYd+BPEbCIIu1sGxBYcOHQVTKVYKbaVDCBWaBjJp++8QueS+
-nJt7EnND8fzvkOc59zzP87vn3vOSjBiuskOu7wAcgANwAA7AATgARox3HjLPPCVmuEsWqFGnykfe
-cxiTb5bnlHnGfSaBv/zilK8ccMAPQ4TCV1FrOpZZda1rLBQ1pnXVY6KOtaZiuFqwYUk7SqZlX9xy
-wqgdLcUBnCVM09a+RoXQqPat4s7MAJdWiaRNIbRpGXXZWTPjO5R+45HlR/wKeGMZ852iaRZ8sAZ4
-bdm/XaVDWfOtRCpT7g/A/wom+NnDE9mqwLlpBM7ZGnj5rc7y4aU4DQC/QmvTnuWkstNesF4m9N9w
-ki+MD+jpWzym5m8K74Y1FgY2/AvB8kRuRmgl0XBe6ML3200rUbWiAVBFzS7pTlTxACo66dK7qUp0
-JRMAmtZuzGq+rYIKnl9QQdsxO8mupk11zABtiA1VA8mOtKqSEJrz2uaEUEmrOgr0rmrDXDx6FoQ1
-zhNm+EOTJp9oeO0veHtlveSd15rnKTly3OKUz7S6JR/p1gFocRh5DCtGWNCw21H6OZTei7Cs1Q/A
-VISVKkA+wvr/RiDJLDDpN7krq8mdYQB0hmZ6TdL7K7gd46UCUI7xUgGYiPFSAZiK8VIByMd4N2ME
-HsR4N2MErkvq9VpUwzv3NLTYa55+luJr0dBfgQNwAA7AATiAfzs1Io98kjfaAAAAJXRFWHRkYXRl
-OmNyZWF0ZQAyMDIwLTA1LTEzVDIzOjE3OjU5KzAzOjAwLEMcegAAACV0RVh0ZGF0ZTptb2RpZnkA
-MjAyMC0wNS0xM1QyMzoxNzo1OSswMzowMF0epMYAAAAASUVORK5CYII=" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="64.000000pt" height="64.000000pt" viewBox="0 0 64.000000 64.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Created by potrace 1.16, written by Peter Selinger 2001-2019
+</metadata>
+<g transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M93 465 c-41 -17 -44 -55 -10 -106 41 -61 119 -83 191 -54 17 8 18 3
+11 -89 l-7 -96 42 0 42 0 -7 96 c-7 92 -6 97 11 89 42 -17 99 -16 134 2 42 22
+80 76 80 115 0 24 -6 32 -35 44 -39 16 -131 19 -168 5 -13 -5 -31 -17 -40 -26
+-16 -15 -18 -15 -34 0 -9 9 -27 21 -40 26 -36 13 -133 10 -170 -6z"/>
+</g>
 </svg>

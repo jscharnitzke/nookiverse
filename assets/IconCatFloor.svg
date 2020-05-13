@@ -1,36 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="128px" height="128px" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve">  <image id="image0" width="128" height="128" x="0" y="0"
-    xlink:href="data:image/png;base64,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" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="128.000000pt" height="128.000000pt" viewBox="0 0 128.000000 128.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Created by potrace 1.16, written by Peter Selinger 2001-2019
+</metadata>
+<g transform="translate(0.000000,128.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M178 873 c-19 -22 -168 -497 -168 -535 0 -17 8 -31 19 -38 27 -14
+1185 -14 1212 0 11 7 19 21 19 38 0 38 -149 513 -168 535 -14 16 -49 17 -457
+17 -408 0 -443 -1 -457 -17z m472 -108 l0 -25 197 -2 c146 -2 197 -6 201 -15
+3 -10 -12 -13 -52 -13 -61 0 -61 -1 -40 -67 2 -9 24 -13 63 -13 50 0 59 -3 64
+-20 5 -20 0 -20 -214 -20 l-219 0 0 -45 0 -45 235 0 c202 0 235 -2 235 -15 0
+-12 -14 -15 -66 -15 l-66 0 7 -40 c5 -33 4 -40 -9 -40 -9 0 -18 12 -22 28 -3
+15 -7 33 -10 40 -3 10 -71 12 -316 10 l-313 -3 -5 -35 c-3 -23 -11 -36 -23
+-38 -15 -3 -17 2 -11 37 l7 41 -72 0 c-56 0 -71 3 -71 15 0 13 33 15 235 15
+l235 0 0 47 0 46 -220 -6 c-121 -4 -220 -5 -220 -3 0 28 16 36 76 36 61 0 64
+1 70 28 3 15 7 33 10 40 2 9 -13 12 -57 12 -52 0 -60 2 -57 18 3 15 22 17 201
+20 l197 2 0 25 c0 16 6 25 15 25 9 0 15 -9 15 -25z"/>
+<path d="M499 703 c-121 -3 -127 -5 -133 -26 -16 -62 -33 -58 268 -55 151 2
+277 6 281 9 3 4 3 23 0 43 l-7 36 -142 -2 c-77 -1 -198 -4 -267 -5z"/>
+</g>
 </svg>
