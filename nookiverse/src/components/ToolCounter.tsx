@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from 'react';
+import React, { useEffect, useState, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { useCookies } from 'react-cookie';
@@ -65,6 +65,10 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
         console.error(e);
     });
 
+    useEffect(() => {
+        changeColor(count);
+    }, [count])
+
     const changeColor = (durability: number) => {
         if(durability === maxDurability) {
             setColor('disabled');
@@ -79,7 +83,6 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
 
     const setCounterValue = (newValue: number) => {
         setCount(newValue);
-        changeColor(newValue);
         setCookie(counterName, newValue, { path: '/' });
         upsertFirestoreRecord(newValue);
     }
