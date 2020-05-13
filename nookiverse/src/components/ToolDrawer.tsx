@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 0,
     },
+    closedDrawer: {
+      width: 0
+    },
     drawerPaper: {
       width: drawerWidth,
     },
@@ -59,10 +62,11 @@ const ToolDrawer: FunctionComponent<ToolDrawerProps> = ({ isOpen, handleCloseDra
     const classes = useStyles();
     const theme = useTheme();
 
+    // TODO: #1 change the tool drawer to a temporary drawer for mobile @jscharnitzke
   return (
     <Drawer
         anchor={theme.direction === 'rtl' ? 'left' : 'right'}
-        className={classes.drawer}
+        className={isOpen ? classes.drawer : classes.closedDrawer}
         classes={{ paper: classes.drawerPaper }}
         ModalProps={{
           keepMounted: true,

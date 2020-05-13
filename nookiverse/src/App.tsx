@@ -22,7 +22,6 @@ import NavDrawer from './components/NavDrawer';
 import PrivateRoute from './components/PrivateRoute';
 
 import Home from './pages/Home';
-import Admin from './pages/Admin';
 import { Profile } from './pages/Profile';
 
 import 'firebase/auth';
@@ -31,6 +30,7 @@ import { FirebaseAuthProvider } from '@react-firebase/auth';
 import { FirestoreProvider } from '@react-firebase/firestore';
 import { firebaseConfig } from './firebase.config';
 import ToolDrawer from './components/ToolDrawer';
+import Catalog from './pages/Catalog';
 
 const drawerWidth = 240;
 
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexGrow: 1,
+      overflowY: 'hidden'
     },
     content: {
       [theme.breakpoints.up('sm')]: {
@@ -66,6 +67,7 @@ function App() {
     setToolDrawerIsOpen(!toolDrawerIsOpen);
   };
 
+  // TODO: Create a footer with Nintendo copyright and link to spreadsheet @jscharnitzke
   return (
     <ThemeProvider theme={theme}>
       <FirestoreProvider firebase={firebase} {...firebaseConfig}>
@@ -88,7 +90,7 @@ function App() {
               <main className={classes.content}>
                 <Toolbar />
                 <Route exact path="/" component={Home} />
-                <PrivateRoute path="/admin" component={Admin} />
+                <Route path="/catalog" component={Catalog} />
                 <PrivateRoute path="/profile" component={Profile} />
               </main>
               <ToolDrawer

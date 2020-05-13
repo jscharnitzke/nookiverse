@@ -41,12 +41,7 @@ const publicLinks: AppLink[] = [
   },
 ];
 
-const privateLinks: AppLink[] = [
-  {
-    target: 'admin',
-    text: 'admin',
-  },
-];
+const privateLinks: AppLink[] = [];
 
 export default function NavLinkList() {
   const classes = useStyles();
