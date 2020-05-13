@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 
-	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
 )
@@ -81,7 +80,8 @@ func main() {
 	defer client.Close()
 
 	for _, item := range items {
-		_, err := client.Collection("items").Doc(item.Name).Set(ctx, map[string]interface{}{
+		_, _, err := client.Collection("items").Add(ctx, map[string]interface{}{
+			"name":                 item.Name,
 			"category":             item.Category,
 			"patternTitle":         item.PatternTitle,
 			"diy":                  item.DIY,
@@ -97,36 +97,13 @@ func main() {
 			"set":                  item.Set,
 			"series":               item.Series,
 			"customizationKitCost": item.CustomizationKitCost,
-		}, firestore.MergeAll)
+			"variants":             item.Variants,
+		})
 
 		if err != nil {
 			log.Fatalln(err)
 		}
 
 		log.Printf("%v imported\n", item.Name)
-
-		for _, variant := range item.Variants {
-			_, err := client.Collection("items").Doc(item.Name).Collection("variants").Doc(variant.UniqueEntryID).Set(ctx, map[string]interface{}{
-				"imagePath":     variant.ImagePath,
-				"variation":     variant.Variation,
-				"filename":      variant.Filename,
-				"variantId":     variant.VariantID,
-				"colors":        variant.Colors,
-				"pattern":       variant.Pattern,
-				"bodyCustomize": variant.BodyCustomize,
-				"bodyTitle":     variant.BodyTitle,
-				"source":        variant.Source,
-				"internalId":    variant.InternalID,
-				"buyPrice":      variant.BuyPrice,
-				"sellPrice":     variant.SellPrice,
-				"themes":        variant.Themes,
-			}, firestore.MergeAll)
-
-			if err != nil {
-				log.Fatalln(err)
-			}
-
-			log.Printf("\tVariant %v imported", variant.UniqueEntryID)
-		}
 	}
 }
