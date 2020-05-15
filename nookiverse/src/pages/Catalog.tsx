@@ -15,50 +15,19 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Accessory from '../components/icons/Accessory';
 import Clothes from '../components/icons/Clothes';
 import Everything from '../components/icons/Everything';
+import Fencing from '../components/icons/Fencing';
+import FossilCategory from '../components/icons/FossilCategory';
+import FloorAndWall from '../components/icons/FloorAndWall';
 import Palette from '../components/icons/Palette';
+
+import { Item, SeasonalAvailability } from '../models/items';
 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
-
-type Item = {
-    catalog: string,
-    category: string,
-    customizationKitCost: number,
-    diy: boolean,
-    interact: string,
-    lightingType: string,
-    name: string,
-    patternCustomize: boolean,
-    patternTitle: string,
-    series: string,
-    set: string,
-    size: string,
-    sourceNotes: string,
-    speakerType: string,
-    tag: string,
-    variants: ItemVariant[],
-    version: string,
-}
-
-type ItemVariant = {
-    bodyCustomize: boolean,
-    bodyTitle: string,
-    buyPrice: number,
-    colors: string[],
-    filename: string,
-    imagePath: string,
-    internalID: number,
-    pattern: string,
-    sellPrice: number,
-    source: string[],
-    themes: string[],
-    variantID: string,
-    variation: string,
-    closetImage: string,
-    storageImage: string,
-    inventoryImage: string,
-    framedImage: string,
-}
+import Music from '../components/icons/Music';
+import Seasons from '../components/icons/Seasons';
+import Tool from '../components/icons/Tool';
+import EtcVertical from '../components/icons/EtcVertical';
 
 type MasterFilter = {
     name: string,
@@ -77,14 +46,14 @@ const FilterButtons: {[index: string]: MasterFilter} = {
     Everything:{
         name: 'Everything',
         icon: Everything,
-        viewBox: '39 68 50 50'
+        viewBox: '39 68 50 50',
     },
     Art: {
         name: 'Art',
         icon: Palette,
         viewBox: '28 52 40 40',
         categories: [
-            'Art'
+            'Art',
         ]
     },
     Clothes: {
@@ -93,12 +62,69 @@ const FilterButtons: {[index: string]: MasterFilter} = {
         viewBox: '77 166 15 15',
         categories: [
             'Accessories',
+            'Bags',
             'Bottoms',
             'Dress-Up',
             'Headwear',
             'Shoes',
             'Socks',
-            'Tops'
+            'Tops',
+            'Umbrellas',
+        ]
+    },
+    Fencing: {
+        name: 'Fencing',
+        icon: Fencing,
+        viewBox: '4 8 7 7',
+        categories: ['Fencing'],
+    },
+    Fossils: {
+        name: 'Fossils',
+        icon: FossilCategory,
+        viewBox: '104 148 17 17',
+        categories: ['Fossils']
+    },
+    FloorsAndWalls: {
+        name: 'Floors & Walls',
+        icon: FloorAndWall,
+        viewBox: '75 135 70 70',
+        categories: [
+            'Floors',
+            'Rugs',
+            'Wall-mounted',
+            'Wallpapers',
+        ]
+    },
+    Music: {
+        name: 'Music',
+        icon: Music,
+        viewBox: '60 140 90 90',
+        categories: [
+            'Music',
+        ]
+    },
+    Seasonal: {
+        name: 'Seasonal',
+        icon: Seasons,
+        viewBox: '25 115 150 150',
+    },
+    Tools: {
+        name: 'Tools',
+        icon: Tool,
+        viewBox: '35 68 60 60',
+        categories: [
+            'Tools'
+        ]
+    },
+    Misc: {
+        name: 'Miscellaneous',
+        icon: EtcVertical,
+        viewBox: '79 129 13 13',
+        categories: [
+            'Miscellaneous',
+            'Other',
+            'Photos',
+            'Posters',
         ]
     },
 }
@@ -106,7 +132,91 @@ const FilterButtons: {[index: string]: MasterFilter} = {
 const SubFilterButtons: {[index: string]: SubFilter[]} = {
     Clothes: [
         {
-            name: 'Accesssories',
+            name: 'Accessories',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Bags',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Bottoms',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Dress-Up',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Headwear',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Shoes',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Socks',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Tops',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Umbrellas',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+    ],
+    'Floors & Walls': [
+        {
+            name: 'Floors',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Rugs',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Wall-mounted',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Wallpapers',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+    ],
+    Miscellaneous: [
+        {
+            name: 'Miscellaneous',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Other',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Photos',
+            icon: Accessory,
+            viewBox: '142 132 15 15'
+        },
+        {
+            name: 'Posters',
             icon: Accessory,
             viewBox: '142 132 15 15'
         },
@@ -120,7 +230,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     filterControls: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     filterIcon: {
         backgroundColor: theme.palette.primary.main,
@@ -207,15 +318,25 @@ const Catalog: FunctionComponent = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [selectedItem, setSelectedItem] = useState<Item>();
     const [selectedFilter, setSelectedFilter] = useState(FilterButtons.Everything);
-    const [selectedSubFilter, setSelectedSubFilter] = useState('');
+    const [selectedSubFilter, setSelectedSubFilter] = useState({});
 
     // componentShouldUpdate
     useEffect(() => {
         setLoading(true);
         
         const itemPromise = selectedFilter === FilterButtons.Everything ?
-            firebase.firestore().collection('items').limit(30).orderBy('name').get() :
-            firebase.firestore().collection('items').where('category', 'in', selectedFilter.categories).limit(limit).orderBy('name').get();
+            firebase.firestore().collection('items').limit(limit).orderBy('index').get() :
+            selectedFilter === FilterButtons.Seasonal ?
+                firebase.firestore().collection('items').where(
+                    'seasonalAvailability', 
+                    'in', 
+                    [SeasonalAvailability.Summer, SeasonalAvailability.Winter]
+                    ).limit(limit).orderBy('index').get() :
+                firebase.firestore().collection('items').where(
+                    'category', 
+                    'in', 
+                    selectedFilter.categories
+                    ).limit(limit).orderBy('index').get();
         
         itemPromise.then((itemsRef) => {
             const fetchedItems = itemsRef.docs.map(doc => doc.data() as Item)
@@ -226,8 +347,6 @@ const Catalog: FunctionComponent = () => {
         });
     }, [page, limit, selectedFilter]);
     
-    // TODO: Add category filters to top of shopping window
-    // TODO: Add alphabet jump links to the left of the list
     return (   
         <Box className={classes.root}>
             <RadioGroup className={classes.filterControls}>
@@ -264,6 +383,7 @@ const Catalog: FunctionComponent = () => {
                                         || selectedItem.variants[0].closetImage 
                                         || selectedItem.variants[0].framedImage
                                         || selectedItem.variants[0].storageImage
+                                        || ''
                                     } 
                                     alt={selectedItem.name} 
                                 />
