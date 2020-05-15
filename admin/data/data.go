@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"sort"
+	"strings"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -138,6 +139,7 @@ func ImportItems(jsonFilePath string) {
 		}
 
 		_, err := client.Collection("items").Doc(item.Name).Set(ctx, map[string]interface{}{
+			"index":                strings.ToLower(item.Name),
 			"name":                 item.Name,
 			"category":             item.Category,
 			"patternTitle":         item.PatternTitle,
@@ -155,6 +157,28 @@ func ImportItems(jsonFilePath string) {
 			"series":               item.Series,
 			"customizationKitCost": item.CustomizationKitCost,
 			"variants":             mappedVariants,
+			"doorDeco":             item.DoorDeco,
+			"vfx":                  item.VFX,
+			"vfxType":              item.VFXType,
+			"windowType":           item.WindowType,
+			"windowColor":          item.WindowColor,
+			"paneType":             item.PaneType,
+			"curtainType":          item.CurtainType,
+			"curtainColor":         item.CurtainColor,
+			"ceilingType":          item.CeilingType,
+			"customizeable":        item.Customizeable,
+			"uses":                 item.Uses,
+			"stackSize":            item.StackSize,
+			"seasonalAvailability": item.SeasonalAvailability,
+			"style":                item.Style,
+			"primaryShape":         item.PrimaryShape,
+			"secondaryShape":       item.SecondaryShape,
+			"type":                 item.Type,
+			"museum":               item.Museum,
+			"sourceSheet":          item.SourceSheet,
+			"realArtworkTitle":     item.RealArtworkTitle,
+			"artist":               item.Artist,
+			"museumDescription":    item.MuseumDescription,
 		}, firestore.MergeAll)
 
 		if err != nil {
