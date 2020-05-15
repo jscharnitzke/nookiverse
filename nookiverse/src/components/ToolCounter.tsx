@@ -66,20 +66,16 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
     });
 
     useEffect(() => {
-        changeColor(count);
-    }, [count])
-
-    const changeColor = (durability: number) => {
-        if(durability === maxDurability) {
+        if(count === maxDurability) {
             setColor('disabled');
-        } else if(durability > maxDurability * 0.85) {
+        } else if(count > maxDurability * 0.85) {
             setColor('error');
-        } else if(durability >= Math.floor(maxDurability / 2)) {
+        } else if(count >= Math.floor(maxDurability / 2)) {
             setColor('action');
         } else {
             setColor('primary');
         }
-    }
+    }, [count, maxDurability])
 
     const setCounterValue = (newValue: number) => {
         setCount(newValue);
