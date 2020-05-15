@@ -24,7 +24,9 @@
   color: white;
 }
 
+.MuiIcon-root,
 .MuiSvgIcon-root,
+.MuiIcon-root:not(:root),
 .MuiSvgIcon-root:not(:root) {
   overflow: visible;
 }

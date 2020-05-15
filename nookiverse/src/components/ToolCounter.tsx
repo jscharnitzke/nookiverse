@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
@@ -20,7 +21,8 @@ type ColorString = "inherit" | "default" | "disabled" | "primary" | "secondary" 
 
 type ToolCounterProps = {
     maxDurability: number,
-    name: string
+    name: string,
+    width: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -33,19 +35,28 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '1.5em'
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '0.8em'
+        },
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '1.5em'
+        },
     },
     toolIcon: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: theme.spacing(2),
+            marginRight: theme.spacing(2),
+        },
     },
     colorAction: {
         color: '#f1e26f'
     }
 }));
 
-const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name, children }) => {
+const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name, width, children }) => {
     const counterName = name + 'Count';
     const [cookies, setCookie] = useCookies([counterName]);
 
@@ -127,15 +138,28 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
                 {count}
             </Box>
             <Box className={classes.flexRow}>
-                <IconButton aria-label='increase tool count' disabled={count === 0} onClick={handleClickDecrementCount}>
+                <IconButton 
+                    aria-label='increase tool count' 
+                    disabled={count === 0} 
+                    onClick={handleClickDecrementCount} 
+                    size={isWidthUp('sm', width) ? 'medium' : 'small'}
+                >
                     <FaMinus />
                 </IconButton>
-                <Icon classes={{
-                    colorAction: classes.colorAction
-                }} className={classes.toolIcon} color={color as ColorString} fontSize="large">
+                <Icon 
+                    classes={{ colorAction: classes.colorAction  }} 
+                    className={classes.toolIcon} 
+                    color={color as ColorString} 
+                    fontSize={isWidthUp('sm', width) ? 'large' : 'small'}
+                >
                     { children ? children : <AiOutlineTool /> }
                 </Icon>
-                <IconButton aria-label='decrease tool count' disabled={count === maxDurability} onClick={handleClickIncrementCount}>
+                <IconButton 
+                    aria-label='decrease tool count' 
+                    disabled={count === maxDurability} 
+                    onClick={handleClickIncrementCount} 
+                    size={isWidthUp('sm', width) ? 'medium' : 'small'}
+                >
                     <FaPlus />
                 </IconButton>
             </Box>
@@ -155,4 +179,4 @@ ToolCounter.defaultProps = {
     maxDurability: 30
 }
 
-export default ToolCounter
+export default withWidth()(ToolCounter)

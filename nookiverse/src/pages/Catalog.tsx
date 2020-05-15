@@ -257,10 +257,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         width: '50%',
         overflow: 'auto',
         [theme.breakpoints.down('sm')]: {
-            maxHeight: window.innerHeight - theme.spacing(7),
+            height: window.innerHeight - theme.spacing(37),
         },
         [theme.breakpoints.up('sm')]: {
-            maxHeight: window.innerHeight - theme.spacing(18),
+            height: window.innerHeight - theme.spacing(18),
         },
     },
     listItem: {
