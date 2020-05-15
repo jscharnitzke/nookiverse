@@ -37,7 +37,7 @@ type Item = {
     speakerType: string,
     tag: string,
     variants: ItemVariant[],
-    version: string
+    version: string,
 }
 
 type ItemVariant = {
@@ -53,7 +53,11 @@ type ItemVariant = {
     source: string[],
     themes: string[],
     variantID: string,
-    variation: string
+    variation: string,
+    closetImage: string,
+    storageImage: string,
+    inventoryImage: string,
+    framedImage: string,
 }
 
 type MasterFilter = {
@@ -210,7 +214,7 @@ const Catalog: FunctionComponent = () => {
         setLoading(true);
         
         const itemPromise = selectedFilter === FilterButtons.Everything ?
-            firebase.firestore().collection('items').limit(limit).orderBy('name').get() :
+            firebase.firestore().collection('items').limit(30).orderBy('name').get() :
             firebase.firestore().collection('items').where('category', 'in', selectedFilter.categories).limit(limit).orderBy('name').get();
         
         itemPromise.then((itemsRef) => {
@@ -255,7 +259,14 @@ const Catalog: FunctionComponent = () => {
                         <Box className={classes.shoppingBackgroundOverlay}></Box>
                         <Box className={classes.shoppingDisplay}>
                             { selectedItem && 
-                                <img src={selectedItem.variants[0].imagePath} alt={selectedItem.name} />
+                                <img src={
+                                        selectedItem.variants[0].imagePath  
+                                        || selectedItem.variants[0].closetImage 
+                                        || selectedItem.variants[0].framedImage
+                                        || selectedItem.variants[0].storageImage
+                                    } 
+                                    alt={selectedItem.name} 
+                                />
                             }
                         </Box>
                     </Box>

@@ -138,6 +138,7 @@ func ImportItems(jsonFilePath string) {
 		}
 
 		_, err := client.Collection("items").Doc(item.Name).Set(ctx, map[string]interface{}{
+			"name":                 item.Name,
 			"category":             item.Category,
 			"patternTitle":         item.PatternTitle,
 			"diy":                  item.DIY,
