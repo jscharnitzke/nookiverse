@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="Music.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg1889"
+   version="1.1"
+   viewBox="0 0 210 297"
+   height="297mm"
+   width="210mm">
+  <defs
+     id="defs1883" />
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="-8"
+     inkscape:window-x="2552"
+     inkscape:window-height="1417"
+     inkscape:window-width="2560"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer4"
+     inkscape:document-units="mm"
+     inkscape:cy="560"
+     inkscape:cx="400"
+     inkscape:zoom="0.35"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata1886">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Trace"
+     id="layer4"
+     inkscape:groupmode="layer">
+    <path
+       id="path1920"
+       d="m 62.760331,214.18308 c -15.899226,-3.1296 -24.526302,-13.31205 -24.500977,-28.91824 0.03881,-23.91678 19.196156,-40.30388 47.117253,-40.30388 h 11.758554 l 0.0088,-44.51319 c 0.0049,-24.73839 0.707026,-47.026787 1.580526,-50.171308 1.836993,-6.61299 7.465373,-10.011527 12.979563,-7.837333 1.95335,0.770188 17.8504,15.821226 35.32678,33.44675 30.607,30.868201 31.81634,32.326101 32.89287,39.653791 2.182,14.85229 -2.0838,28.9495 -11.34433,37.48968 -6.16928,5.68941 -13.04274,9.8904 -14.23366,8.69948 -0.54536,-0.54536 -0.12348,-4.87059 0.9375,-9.61161 2.57368,-11.50038 0.0501,-16.70575 -14.63254,-30.18229 -18.55183,-17.02787 -17.00133,-19.29243 -16.4992,24.09758 0.4206,36.34448 0.32018,37.76862 -3.17178,44.98056 -5.92197,12.23068 -17.4541,20.07016 -34.031982,23.13474 -10.500493,1.94112 -14.475741,1.94692 -24.1874,0.0353 z"
+       style="fill:#000000;stroke-width:1.57569" />
+  </g>
+</svg>
