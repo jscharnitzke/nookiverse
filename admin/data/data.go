@@ -8,6 +8,7 @@ import (
 	"log"
 	"sort"
 
+	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
@@ -32,24 +33,53 @@ type Item struct {
 	Series               string        `json:"series"`
 	CustomizationKitCost int           `json:"customizationKitCost"`
 	Variants             []ItemVariant `json:"variants"`
+	DoorDeco             bool          `json:"doorDeco"`
+	VFX                  bool          `json:"vfx"`
+	VFXType              string        `json:"vfxType"`
+	WindowType           string        `json:"windowType"`
+	WindowColor          string        `json:"windowColor"`
+	PaneType             string        `json:"paneType"`
+	CurtainType          string        `json:"curtainType"`
+	CurtainColor         string        `json:"curtainColor"`
+	CeilingType          string        `json:"ceilingType"`
+	Customizeable        bool          `json:"customize"`
+	Uses                 int           `json:"uses"`
+	StackSize            int           `json:"stackSize"`
+	SeasonalAvailability string        `json:"seasonalAvailability"`
+	Style                string        `json:"style"`
+	PrimaryShape         string        `json:"primaryShape"`
+	SecondaryShape       string        `json:"secondaryShape"`
+	Type                 string        `json:"type"`
+	Museum               string        `json:"museum"`
+	SourceSheet          string        `json:"category"`
+	RealArtworkTitle     string        `json:"realArtworkTitle"`
+	Artist               string        `json:"artist"`
+	MuseumDescription    string        `json:"museumDescription"`
 }
 
 // An ItemVariant is a specific instance of an Item
 type ItemVariant struct {
-	ImagePath     string   `json:"image"`
-	Variation     string   `json:"variation"`
-	Filename      string   `json:"filename"`
-	VariantID     string   `json:"variantId"`
-	UniqueEntryID string   `json:"uniqueEntryId"`
-	Colors        []string `json:"colors"`
-	Pattern       string   `json:"pattern"`
-	BodyCustomize bool     `json:"bodyCustomize"`
-	BodyTitle     string   `json:"bodyTitle"`
-	Source        []string `json:"source"`
-	InternalID    int      `json:"internalId"`
-	BuyPrice      int      `json:"buy"`
-	SellPrice     int      `json:"sell"`
-	Themes        []string `json:"themes"`
+	ImagePath      string   `json:"image"`
+	Variation      string   `json:"variation"`
+	Filename       string   `json:"filename"`
+	VariantID      string   `json:"variantId"`
+	UniqueEntryID  string   `json:"uniqueEntryId"`
+	Colors         []string `json:"colors"`
+	Pattern        string   `json:"pattern"`
+	BodyCustomize  bool     `json:"bodyCustomize"`
+	BodyTitle      string   `json:"bodyTitle"`
+	Source         []string `json:"source"`
+	InternalID     int      `json:"internalId"`
+	BuyPrice       int      `json:"buy"`
+	SellPrice      int      `json:"sell"`
+	Themes         []string `json:"themes"`
+	ClosetImage    string   `json:"closetImage"`
+	StorageImage   string   `json:"storageImage"`
+	LabelThemes    []string `json:"labelThemes"`
+	FramedImage    string   `json:"framedImage"`
+	InventoryImage string   `json:"inventoryImage"`
+	Genuine        bool     `json:"genuine"`
+	HighResTexture string   `json:"highResTexture"`
 }
 
 // ImportItems imports items into Firestore from a JSON file
@@ -79,8 +109,35 @@ func ImportItems(jsonFilePath string) {
 	defer client.Close()
 
 	for _, item := range items {
-		_, _, err := client.Collection("items").Add(ctx, map[string]interface{}{
-			"name":                 item.Name,
+		var mappedVariants []map[string]interface{}
+
+		for _, variant := range item.Variants {
+			mappedVariants = append(mappedVariants, map[string]interface{}{
+				"imagePath":      variant.ImagePath,
+				"variation":      variant.Variation,
+				"filename":       variant.Filename,
+				"variantId":      variant.VariantID,
+				"uniqueEntryId":  variant.UniqueEntryID,
+				"colors":         variant.Colors,
+				"pattern":        variant.Pattern,
+				"bodyCustomize":  variant.BodyCustomize,
+				"bodyTitle":      variant.BodyTitle,
+				"source":         variant.Source,
+				"internalId":     variant.InternalID,
+				"buyPrice":       variant.BuyPrice,
+				"sellPrice":      variant.SellPrice,
+				"themes":         variant.Themes,
+				"closetImage":    variant.ClosetImage,
+				"storageImage":   variant.StorageImage,
+				"labelThemes":    variant.LabelThemes,
+				"framedImage":    variant.FramedImage,
+				"inventoryImage": variant.InventoryImage,
+				"genuine":        variant.Genuine,
+				"highResTexture": variant.HighResTexture,
+			})
+		}
+
+		_, err := client.Collection("items").Doc(item.Name).Set(ctx, map[string]interface{}{
 			"category":             item.Category,
 			"patternTitle":         item.PatternTitle,
 			"diy":                  item.DIY,
@@ -96,8 +153,8 @@ func ImportItems(jsonFilePath string) {
 			"set":                  item.Set,
 			"series":               item.Series,
 			"customizationKitCost": item.CustomizationKitCost,
-			"variants":             item.Variants,
-		})
+			"variants":             mappedVariants,
+		}, firestore.MergeAll)
 
 		if err != nil {
 			log.Fatalln(err)
