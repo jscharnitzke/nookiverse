@@ -54,9 +54,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
     const [color, setColor] = useState('primary');
 
     firebase.auth().onAuthStateChanged(user => {
-        if(user && cookies[counterName]) {
-            upsertFirestoreRecord(count);
-        } else if(user) {
+        if(user) {
             restoreCount();
         }
 
