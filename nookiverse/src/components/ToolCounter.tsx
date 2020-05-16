@@ -94,7 +94,6 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
     }, [count, maxDurability])
 
     useEffect(() => {
-        console.log('Counter updated: ' + counterName);
         setCookie(counterName, count, { path: '/' });
         
         if(!firebase.auth().currentUser) {
