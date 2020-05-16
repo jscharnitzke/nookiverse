@@ -28,6 +28,20 @@ import Music from '../components/icons/Music';
 import Seasons from '../components/icons/Seasons';
 import Tool from '../components/icons/Tool';
 import EtcVertical from '../components/icons/EtcVertical';
+import Furniture from '../components/icons/Furniture';
+import Bag from '../components/icons/Bag';
+import Bottoms from '../components/icons/Bottoms';
+import Onepiece from '../components/icons/Onepiece';
+import Hat from '../components/icons/Hat';
+import Shoes from '../components/icons/Shoes';
+import Socks from '../components/icons/Socks';
+import Umbrella from '../components/icons/Umbrella';
+import Rug from '../components/icons/Rug';
+import WallMount from '../components/icons/WallMount';
+import Wall from '../components/icons/Wall';
+import Goods from '../components/icons/Goods';
+import Villager from '../components/icons/Villager';
+import Floor from '../components/icons/Floor';
 
 type MasterFilter = {
     name: string,
@@ -95,6 +109,14 @@ const FilterButtons: {[index: string]: MasterFilter} = {
             'Wallpapers',
         ]
     },
+    Housewares: {
+        name: 'Housewares',
+        icon: Furniture,
+        viewBox: '65 135 220 220',
+        categories: [
+            'Housewares'
+        ]
+    },
     Music: {
         name: 'Music',
         icon: Music,
@@ -134,91 +156,86 @@ const SubFilterButtons: {[index: string]: SubFilter[]} = {
         {
             name: 'Accessories',
             icon: Accessory,
-            viewBox: '142 132 15 15'
+            viewBox: '135 120 30 30'
         },
         {
             name: 'Bags',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Bag,
+            viewBox: '-120 100 200 200'
         },
         {
             name: 'Bottoms',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Bottoms,
+            viewBox: '20 80 150 150'
         },
         {
             name: 'Dress-Up',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Onepiece,
+            viewBox: '-20 0 256 256'
         },
         {
             name: 'Headwear',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Hat,
+            viewBox: '160 40 256 256'
         },
         {
             name: 'Shoes',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Shoes,
+            viewBox: '60 100 180 180'
         },
         {
             name: 'Socks',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Socks,
+            viewBox: '60 100 400 400'
         },
         {
             name: 'Tops',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Clothes,
+            viewBox: '73 155 24 24'
         },
         {
             name: 'Umbrellas',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Umbrella,
+            viewBox: '40 100 512 512'
         },
     ],
     'Floors & Walls': [
         {
             name: 'Floors',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Floor,
+            viewBox: '40 100 300 300'
         },
         {
             name: 'Rugs',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Rug,
+            viewBox: '40 100 512 512'
         },
         {
             name: 'Wall-mounted',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: WallMount,
+            viewBox: '40 100 512 512'
         },
         {
             name: 'Wallpapers',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Wall,
+            viewBox: '40 100 512 512'
         },
     ],
     Miscellaneous: [
         {
             name: 'Miscellaneous',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: EtcVertical,
+            viewBox: '70 115 30 30'
         },
         {
             name: 'Other',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            icon: Goods,
+            viewBox: '40 100 512 512'
         },
         {
-            name: 'Photos',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
-        },
-        {
-            name: 'Posters',
-            icon: Accessory,
-            viewBox: '142 132 15 15'
+            name: 'Photos & Posters',
+            icon: Villager,
+            viewBox: '40 100 512 512'
         },
     ]
 }
@@ -306,7 +323,29 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         flexDirection: 'column',
         width: '50%',
         justifyContent: 'center',
-    }
+    },
+    subFilterControls: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    subFilterIcon: {
+        backgroundColor: theme.palette.primary.main,
+        borderRadius: theme.spacing(1),
+        height: '100%',
+        margin: 0,
+        padding: 0,
+        width: '100%',
+        '&:hover': {
+            backgroundColor: theme.palette.primary.light
+        },
+    },
+    subFilterPaper: {
+        borderRadius: theme.spacing(1),
+        height: theme.spacing(5),
+        margin: theme.spacing(1),
+        width: theme.spacing(5),
+    },
 }));
 
 const Catalog: FunctionComponent = () => {
@@ -318,11 +357,15 @@ const Catalog: FunctionComponent = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [selectedItem, setSelectedItem] = useState<Item>();
     const [selectedFilter, setSelectedFilter] = useState(FilterButtons.Everything);
-    const [selectedSubFilter, setSelectedSubFilter] = useState({});
+    const [selectedSubFilter, setSelectedSubFilter] = useState<SubFilter>();
 
     // componentShouldUpdate
     useEffect(() => {
         setLoading(true);
+
+        if(selectedSubFilter) {
+            return;
+        }
         
         const itemPromise = selectedFilter === FilterButtons.Everything ?
             firebase.firestore().collection('items').limit(limit).orderBy('index').get() :
@@ -346,7 +389,38 @@ const Catalog: FunctionComponent = () => {
             setLoading(false);
         });
     }, [page, limit, selectedFilter]);
-    
+
+    useEffect(() => {
+        setLoading(true);
+
+        if(!selectedSubFilter) {
+            setLoading(false);
+            return;
+        }
+
+        const itemQuery = selectedSubFilter.name === 'Photos & Posters' ? 
+            firebase.firestore().collection('items').where(
+                'category',
+                'in',
+                ['Photos', 'Posters']
+            ) :
+            firebase.firestore().collection('items').where(
+                'category',
+                '==',
+                selectedSubFilter.name
+            );
+
+        itemQuery.limit(limit).orderBy('index').get().then((itemsRef) => {
+            const fetchedItems = itemsRef.docs.map(doc => doc.data() as Item)
+            setItems(fetchedItems);
+            setSelectedItem(fetchedItems[0]);
+        }).finally(() => {
+            setLoading(false);
+        });
+
+
+    }, [page, limit, selectedSubFilter]);
+
     return (   
         <Box className={classes.root}>
             <RadioGroup className={classes.filterControls}>
@@ -359,11 +433,13 @@ const Catalog: FunctionComponent = () => {
                         <FormControlLabel
                             className={classes.filterIcon}
                             control={<Radio className={classes.hiddenRadio} />}
-                            label={(<SvgIcon
-                                color="secondary"
-                                component={filter.icon}
-                                viewBox={filter.viewBox}
-                            />)}
+                            label={(
+                                <SvgIcon
+                                    color="secondary"
+                                    component={filter.icon}
+                                    viewBox={filter.viewBox}
+                                />
+                            )}
                             labelPlacement="top"
                             onClick={() => setSelectedFilter(filter)}
                             value={filter.name}
@@ -371,6 +447,32 @@ const Catalog: FunctionComponent = () => {
                     </Paper>
                 ))}
             </RadioGroup>
+            { selectedFilter && 
+                <RadioGroup className={classes.subFilterControls}>
+                    {SubFilterButtons[selectedFilter.name] && Object.values(SubFilterButtons[selectedFilter.name]).map((subFilter: SubFilter) => (
+                        <Paper 
+                            className={classes.subFilterPaper} 
+                            elevation={selectedSubFilter === subFilter ? 0 : 3}
+                            key={subFilter.name}
+                        >
+                            <FormControlLabel
+                                className={classes.subFilterIcon}
+                                control={<Radio className={classes.hiddenRadio} />}
+                                label={(
+                                    <SvgIcon
+                                        color="secondary"
+                                        component={subFilter.icon}
+                                        viewBox={subFilter.viewBox}
+                                    />
+                                )}
+                                labelPlacement="top"
+                                onClick={() => setSelectedSubFilter(subFilter)}
+                                value={subFilter.name}
+                            />
+                        </Paper>
+                    ))}
+                </RadioGroup>
+            }
             {!loading ? (
                 <Box className={classes.catalog}>
                     <Box className={classes.shoppingWindow}>
