@@ -22,8 +22,9 @@ import Palette from '../components/icons/Palette';
 
 import { Item, SeasonalAvailability } from '../models/items';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/firestore';
+
 import Music from '../components/icons/Music';
 import Seasons from '../components/icons/Seasons';
 import Tool from '../components/icons/Tool';

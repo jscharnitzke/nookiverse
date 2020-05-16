@@ -21,6 +21,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+
 import PasswordField from './PasswordField';
 
 type AuthDialogProps = {

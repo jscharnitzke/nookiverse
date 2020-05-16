@@ -13,6 +13,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 
 import { AiOutlineTool } from 'react-icons/ai';
 import { FaMinus, FaPlus } from 'react-icons/fa';
@@ -94,7 +95,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
     }, [count, maxDurability])
 
     useEffect(() => {
-        setCookie(counterName, count, { path: '/' });
+        setCookie(counterName, count, { path: '/', domain: '.nookiverse.com', sameSite: 'strict' });
         
         if(!firebase.auth().currentUser) {
             return;

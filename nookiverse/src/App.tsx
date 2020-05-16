@@ -24,8 +24,10 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import { Profile } from './pages/Profile';
 
-import 'firebase/auth';
 import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+
 import { FirebaseAuthProvider } from '@react-firebase/auth';
 import { FirestoreProvider } from '@react-firebase/firestore';
 import { firebaseConfig } from './firebase.config';
@@ -63,7 +65,7 @@ function App() {
   };
 
   const toggleToolDrawer = () => {
-    setCookie('toolDrawerIsOpen', !toolDrawerIsOpen);
+    setCookie('toolDrawerIsOpen', !toolDrawerIsOpen, { path: '/', domain: '.nookiverse.com', sameSite: 'strict'});
     setToolDrawerIsOpen(!toolDrawerIsOpen);
   };
 

@@ -14,7 +14,7 @@ import VpnKey from '@material-ui/icons/VpnKey';
 import PasswordField from '../components/PasswordField';
 import SimpleAlertDialog from '../components/SimpleAlertDialog';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
 const useStyles = makeStyles((theme: Theme) =>  

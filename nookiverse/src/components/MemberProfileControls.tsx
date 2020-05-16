@@ -10,7 +10,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 
 import { Link } from  'react-router-dom';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
 const useStyles = makeStyles((theme: Theme) =>
