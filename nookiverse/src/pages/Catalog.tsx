@@ -362,10 +362,6 @@ const Catalog: FunctionComponent = () => {
     // componentShouldUpdate
     useEffect(() => {
         setLoading(true);
-
-        if(selectedSubFilter) {
-            return;
-        }
         
         const itemPromise = selectedFilter === FilterButtons.Everything ?
             firebase.firestore().collection('items').limit(limit).orderBy('index').get() :
@@ -387,6 +383,7 @@ const Catalog: FunctionComponent = () => {
             setSelectedItem(fetchedItems[0]);
         }).finally(() => {
             setLoading(false);
+            setSelectedSubFilter(undefined);
         });
     }, [page, limit, selectedFilter]);
 
