@@ -64,15 +64,22 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
     const [count, setCount] = useState(cookies[counterName] ? +cookies[counterName] : 0);
     const [color, setColor] = useState('primary');
 
-    firebase.auth().onAuthStateChanged(user => {
-        if(user) {
-            restoreCount();
-        }
+    useEffect(() => {
+        let authListener = firebase.auth().onAuthStateChanged(async user => {
+            if(user) { 
+                const userSettingsDoc = await firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid).get();
+                const storedCount = userSettingsDoc.get(counterName);
+                
+                if(storedCount) {
+                    setCount(+storedCount);
+                }
+            }
+        }, (e: firebase.auth.Error) => {
+            console.error(e);
+        });
 
-        return user;
-    }, (e: firebase.auth.Error) => {
-        console.error(e);
-    });
+        return (() => authListener());
+    }, [counterName]);
 
     useEffect(() => {
         if(count === maxDurability) {
@@ -86,50 +93,35 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
         }
     }, [count, maxDurability])
 
-    const setCounterValue = (newValue: number) => {
-        setCount(newValue);
-        setCookie(counterName, newValue, { path: '/' });
-        upsertFirestoreRecord(newValue);
-    }
-
-    const upsertFirestoreRecord = (newCount: number) => {
+    useEffect(() => {
+        console.log('Counter updated: ' + counterName);
+        setCookie(counterName, count, { path: '/' });
+        
         if(!firebase.auth().currentUser) {
             return;
         }
 
         const userSettingsRef = firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid);
         const countObject: {[index: string]: number} = {};
-        countObject[counterName] = newCount;
+        countObject[counterName] = count;
         userSettingsRef.set(countObject, {merge: true});
-    }
 
-    const restoreCount = async () => {
-        if(!firebase.auth().currentUser) {
-            return;
-        }
-
-        const userSettingsDoc = await firebase.firestore().collection('userSettings').doc(firebase.auth().currentUser?.uid).get();
-        const storedCount = userSettingsDoc.get(counterName);
-        
-        if(storedCount) {
-            setCounterValue(+storedCount);
-        }
-    }
+    }, [count, counterName, setCookie])
 
     const handleClickIncrementCount = () => {
         if(count < maxDurability) {
-            setCounterValue(count + 1);
+            setCount(count + 1);
         }
     }
 
     const handleClickDecrementCount =  () => {
         if(count > 0) {
-            setCounterValue(count - 1);
+            setCount(count - 1);
         }
     }
 
     const handleClickReset = () => {
-        setCounterValue(0);
+        setCount(0);
     }
 
     return (
@@ -142,7 +134,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
                     aria-label='increase tool count' 
                     disabled={count === 0} 
                     onClick={handleClickDecrementCount} 
-                    size={isWidthUp('sm', width) ? 'medium' : 'small'}
+                    size="medium"
                 >
                     <FaMinus />
                 </IconButton>
@@ -158,7 +150,7 @@ const ToolCounter: FunctionComponent<ToolCounterProps> = ({ maxDurability, name,
                     aria-label='decrease tool count' 
                     disabled={count === maxDurability} 
                     onClick={handleClickIncrementCount} 
-                    size={isWidthUp('sm', width) ? 'medium' : 'small'}
+                    size="medium"
                 >
                     <FaPlus />
                 </IconButton>

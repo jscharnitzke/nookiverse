@@ -121,11 +121,8 @@ export default function AuthDialog(props: AuthDialogProps) {
         try {
             const authProvider = new ProviderObject[provider]();
             await firebase.auth().signInWithPopup(authProvider);
-            closeDialog();
         } catch(error) {
             handleErrors(error);
-        } finally {
-            setIsProcessing(false);
         }
     }
     
