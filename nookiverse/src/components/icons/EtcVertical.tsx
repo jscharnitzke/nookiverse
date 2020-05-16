@@ -4,14 +4,13 @@ function EtcVertical(props: any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="210mm"
-      height="297mm"
+      width="128"
+      height="128"
       version="1.1"
-      viewBox="0 0 210 297"
+      viewBox="0 0 128 128"
       {...props}
     >
       <g
-        stroke="#000"
         strokeDasharray="none"
         strokeMiterlimit="4"
         strokeOpacity="1"
